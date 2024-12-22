@@ -81,7 +81,7 @@ def fetchRawData(xmlFilePath):
 
         # Iterate through variable elements
         for variable in globalVar.findall('.//variable', namespace):
-            variableName = variable.get('name')  # Get the variable name
+            structName = variable.get('name')  # Get the variable name
 
             # Check if it is a structured or primitive type
             typeElement = variable.find('.//type', namespace)
@@ -92,29 +92,29 @@ def fetchRawData(xmlFilePath):
                 structType = structTypeElement.get('name')
                 variableData = {
                     "Struct": structType,
-                    "Members": []
+                    "Variables": []
                 }
                 # Find all member elements under variableStructDeviceAssignment
-                members = variable.findall(".//addData/data/variableStructDeviceAssignment/member", namespace)
-                for member in members:
-                    memberName = member.get('name')
-                    memberAddress = formatAddress(member.get('address'))
+                variables = variable.findall(".//addData/data/variableStructDeviceAssignment/member", namespace)
+                for variable in variables:
+                    variableName = variable.get('name')
+                    variableAddress = formatAddress(variable.get('address'))
 
-                    # Add member details as a list
-                    variableData["Members"].append([memberName, memberAddress])
+                    # Add variable details as a list
+                    variableData["Variables"].append([variableName, variableAddress])
 
             else:
                 # Primitive variable
                 variableType = getPrimitiveType(typeElement, namespace)
                 variableAddress = formatAddress(variable.get('address'))
                 variableData = {
-                    "Struct": "Primitive",  # Explicitly mark as Primitive
+                    "Struct": "Primitive", 
                     "Type": variableType,
                     "Address": variableAddress
                 }
 
             # Add the variable to the scadaVariable dictionary
-            scadaVariable[variableName] = variableData
+            scadaVariable[structName] = variableData
 
         # Add the globalVar to the dataFile dictionary
         dataFile[globalVarName] = scadaVariable
@@ -122,7 +122,7 @@ def fetchRawData(xmlFilePath):
     return dataFile
 
 # Function: Reports and optionally prunes data with "Unknown" primitive types or are Null
-# Param: dataFile (dict) Original dataFile containing structured variables and members
+# Param: dataFile (dict) Original dataFile containing structured variables and variables
 # Param: pruneData (bool) True = Filters and Removes "Unknown" Types | False = Returns Original Data
 # Param: debugFlag (bool): True = Prints Out Debug Information
 # Returns: (dict) A filtered or unmodified dictionary based on pruneData flag
@@ -142,31 +142,31 @@ def reportUnknownData(dataFile, pruneData, debugFlag):
 
             # Check if it is a structured variable
             if structType != "Primitive":
-                updated_members = []  # List to hold valid members
-                for member in variableData.get("Members", []):
-                    if len(member) == 3:  # Ensure member has all required fields
-                        memberName, memberType, memberAddress = member
-                        if memberType == "Unknown":  # Handle unknown types
+                updated_variables = []  # List to hold valid variables
+                for variable in variableData.get("Variables", []):
+                    if len(variable) == 3:  # Ensure variable has all required fields
+                        variableName, variableType, variableAddress = variable
+                        if variableType == "Unknown":  # Handle unknown types
                             unknown_count += 1
                             if debugFlag:
-                                print(f"Struct: {structType}, Member: {memberName}, Address: {memberAddress}")
+                                print(f"Struct: {structType}, Name: {variableName}, Address: {variableAddress}")
                             if pruneData:
                                 keep_variable = False  # Mark variable for removal if pruning
                         else:
-                            updated_members.append(member)  # Keep valid members
-                    else:  # Handle warnings for malformed members
+                            updated_variables.append(variable)  # Keep valid variables
+                    else:  # Handle warnings for malformed variables
                         unknown_count += 1  # Count warnings in the unknown total
                         if debugFlag:
-                            print(f"Warning: Member in {structType} has an unexpected format: {member}")
+                            print(f"Warning: Variable in {structType} has an unexpected format: {variable}")
                         if pruneData:
                             keep_variable = False  # Mark variable for removal if pruning
                 if pruneData and keep_variable:
-                    variableData["Members"] = updated_members  # Keep only valid members
+                    variableData["Variables"] = updated_variables  # Keep only valid variables
             else:  # Handle primitive variables
                 if variableData.get("Type") == "Unknown":  # Check if primitive type is unknown
                     unknown_count += 1
                     if debugFlag:
-                        print(f"Struct: Primitive, Member: {variableName}, Address: {variableData.get('Address')}")
+                        print(f"Struct: Primitive, Name: {variableName}, Address: {variableData.get('Address')}")
                     if pruneData:
                         keep_variable = False  # Mark variable for removal if pruning
 
@@ -183,7 +183,7 @@ def reportUnknownData(dataFile, pruneData, debugFlag):
 
 
 # Function: Maps Each Variable Name to its Corresponding Primitive Data Type and Appends to it to the Dictionary
-# Param: dataFile (dict) Original dataFile containing structured variables and members
+# Param: dataFile (dict) Original dataFile containing structured variables and variables
 # Param: dataStructure (dict) The dictionary containing the Data Structure Information
 # Returns: (dict) A Dictionary of dataFile Contents with newly appended Primitive Type
 def mapVariableTypes(dataFile, dataStructure): 
@@ -195,14 +195,14 @@ def mapVariableTypes(dataFile, dataStructure):
                 # Find the corresponding derived data type in dataStructure
                 matching_struct = next((d for d in dataStructure["Derived Data Types"] if d["Struct"] == structType), None)
                 if matching_struct:
-                    # Update Members with matched primitive types
-                    updated_members = []
-                    for member in variableData.get("Members", []):
-                        memberName, memberAddress = member
+                    # Update Variables with matched primitive types
+                    updated_variables = []
+                    for variable in variableData.get("Variables", []):
+                        variableName, variableAddress = variable
                         # Get the primitive type from the derived data type
-                        memberType = matching_struct["Variables"].get(memberName, "Unknown")
-                        updated_members.append([memberName, memberType, memberAddress])
-                    # Replace Members in dataFile with enriched data
-                    variableData["Members"] = updated_members
+                        variableType = matching_struct["Variables"].get(variableName, "Unknown")
+                        updated_variables.append([variableName, variableType, variableAddress])
+                    # Replace Variables in dataFile with enriched data
+                    variableData["Variables"] = updated_variables
 
     return dataFile
