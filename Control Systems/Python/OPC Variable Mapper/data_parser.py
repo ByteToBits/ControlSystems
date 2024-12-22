@@ -2,7 +2,7 @@ import xml.etree.ElementTree as elementTree
 import pprint
 
 # Function: Print the Dictionary in a Formatted Manner for Debugging Purposes
-def printDictionary(content, debugFlag): 
+def printFormater(content, debugFlag): 
    if debugFlag: pprint.pprint(content)
 
 
@@ -139,7 +139,7 @@ def reportUnknownData(dataFile, pruneData, debugFlag):
         for variableName, variableData in variables.items():
             structType = variableData.get("Struct")
             keep_variable = True  # Default to keeping the variable unless pruning removes it
-
+# 
             # Check if it is a structured variable
             if structType != "Primitive":
                 updated_variables = []  # List to hold valid variables

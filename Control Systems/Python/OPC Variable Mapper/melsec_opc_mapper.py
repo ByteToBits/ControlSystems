@@ -8,8 +8,9 @@ dataStructureDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Data 
 outputDataDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Output"
 
 scanRateSetting = 1000; 
-headerString = ( "Tag Name,Address,Data Type,Respect Data Type,Client Access,Scan Rate,Scaling,Raw Low,Raw High,"
-                 "Scaled Low,Scaled High,Scaled Data Type,Clamp Low,Clamp High,Eng Units,Description,Negate Value" )
+headerString = ("Tag Name,Address,Data Type,Respect Data Type,Client Access,Scan Rate,Scaling,Raw Low,Raw High,"
+                "Scaled Low,Scaled High,Scaled Data Type,Clamp Low,Clamp High,Eng Units,Description,Negate Value\n")
+trailerPacket = f',,,,,,,,,"",'
 
 #SCADA_FCU_6_10_VSD_Ctrl_Bypass_Shorterlock	D0001012.02	Boolean	1	R/W	750
 
@@ -22,7 +23,7 @@ try:
     xmlFilePath = os.path.join(dataStructureDirectory, files) 
     structType, dataPacket = dataParser.fetchDataStructure(xmlFilePath); 
     dataStructure["Derived Data Types"].append({'Struct': structType, 'Variables': dataPacket})
-  dataParser.printDictionary(dataStructure, False)
+  dataParser.printFormater(dataStructure, False)
   print("Success: Reading & Parsing Data Strucutre")
 except Exception as e:
   print("Error: Reading & Parsing Data Strucutre - ", e)
@@ -34,7 +35,7 @@ try:
   for files in os.listdir(rawDataDirectory):
       xmlFilePath = os.path.join(rawDataDirectory, files)
       dataFile = dataParser.fetchRawData(xmlFilePath)
-  dataParser.printDictionary(dataFile, False)
+  dataParser.printFormater(dataFile, False)
   print("Success: Reading & Parsing Raw Data")
 except Exception as e: 
   print("Error: Reading & Parsing Raw Data - ", e)
@@ -44,14 +45,14 @@ except Exception as e:
 # primitive data types and append types to the dataFile.
 try: 
   dataFile = dataParser.mapVariableTypes(dataFile, dataStructure)
-  dataParser.printDictionary(dataFile, False)
+  dataParser.printFormater(dataFile, False)
   print("Success: Data Wrangling Sucess")
 except Exception as e: 
   print("Error: Mapping Data Types - ", e)
   traceback.print_exc()     
 
 # Process 4: Data Cleaning - Remove any Variables with "Unknown" or Missing Primitive Data Type
-dataCleaning = True; 
+dataCleaning = False; 
 print("\nExecute: Data Cleaning (Flag = " + str(dataCleaning) + ")")
 if dataCleaning: 
   print("Pre-Filter Data for 'Unknown' or Missing Primitive Data Type:")
@@ -63,12 +64,41 @@ if dataCleaning:
 dataFilter = True; 
 print("\nExecute: Data Filter (Flag = " + str(dataFilter) + ")")
 
-# Process 6: Structure the Data and Write it to a CSV File
-globalVariables = dataFile.keys() # Returns a Dictionary View of the Keys
-if globalVariables: 
-  for globalVariable in globalVariables:  # parentKey Need to be Iterated
-    structVariables = list(dataFile[globalVariable].keys())
-    for i in range(len(structVariables)): 
-      print(structVariables[i])
-      # for variable in structVariables: 
-        # print(variable)
+# Process 6: Structure the Data 
+print("\nExecute: Data Restructuring")
+contentList = [headerString]
+for fileName, globalVariables in dataFile.items():  # parentKey Need to be Iterated
+  stringFileName = fileName
+  print("File Name: " + stringFileName)
+  
+  for globalVariable,  variableAttributes in globalVariables.items():
+    structType = variableAttributes.get("Struct")
+    if globalVariable == "SCADA_FCU_6_10_VSD":
+      for attributes in variableAttributes.get("Variables", []): 
+        if structType != "Primitive": 
+          if len(attributes) == 3: 
+            attributeName, attributeType, attributeAddress = attributes
+            permissions = "R" if attributeName[0:2] == "FB" else "R/W"
+            concatString = f'"{globalVariable}_{attributeName}","{attributeAddress}",{attributeType},1,{permissions}'
+            concatString = f'{concatString},{scanRateSetting},{trailerPacket}\n'
+        contentList.append(concatString)
+
+dataParser.printFormater(contentList, False)
+
+# Process 7: Write Data to CSV
+stringFileName = ""
+try: 
+  for fileName, globalVariables in dataFile.items():
+    if fileName and globalVariables: 
+      stringFileName = fileName.replace('SCADA_', "")
+      outputDataDirectory = f'{outputDataDirectory}\{stringFileName}.csv'
+      with open(outputDataDirectory, "w", newline="") as file:
+          file.writelines(contentList)     
+  # print(f"CSV written to Destination: {outputDataDirectory}")
+  print(f"Success: Data Written to CSV Files")
+except Exception as e: 
+  print("Error: Writing Data to Destination - ", e)
+  print("Destination: " + stringFileName)
+  traceback.print_exc() 
+
+print(f"End of Program\n")
