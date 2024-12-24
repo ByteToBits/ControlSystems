@@ -140,11 +140,11 @@ def reportUnknownData(dataFile, pruneData, debugFlag):
 
         for variableName, variableData in variables.items():
             structType = variableData.get("Struct")
-            keep_variable = True  # Default to keeping the variable unless pruning removes it
+            validVariable = True  # Default to keeping the variable unless pruning removes it
 # 
             # Check if it is a structured variable
             if structType != "Primitive":
-                updated_variables = []  # List to hold valid variables
+                updateVariableList = []  # List to hold valid variables
                 for variable in variableData.get("Variables", []):
                     if len(variable) == 3:  # Ensure variable has all required fields
                         variableName, variableType, variableAddress = variable
@@ -153,26 +153,26 @@ def reportUnknownData(dataFile, pruneData, debugFlag):
                             if debugFlag:
                                 print(f"Struct: {structType}, Name: {variableName}, Address: {variableAddress}")
                             if pruneData:
-                                keep_variable = False  # Mark variable for removal if pruning
+                                validVariable = False  # Mark variable for removal if pruning
                         else:
-                            updated_variables.append(variable)  # Keep valid variables
+                            updateVariableList.append(variable)  # Keep valid variables
                     else:  # Handle warnings for malformed variables
                         unknown_count += 1  # Count warnings in the unknown total
                         if debugFlag:
                             print(f"Warning: Variable in {structType} has an unexpected format: {variable}")
                         if pruneData:
-                            keep_variable = False  # Mark variable for removal if pruning
-                if pruneData and keep_variable:
-                    variableData["Variables"] = updated_variables  # Keep only valid variables
+                            validVariable = False  # Mark variable for removal if pruning
+                if pruneData and validVariable:
+                    variableData["Variables"] = updateVariableList  # Keep only valid variables
             else:  # Handle primitive variables
-                if variableData.get("Type") == "Unknown":  # Check if primitive type is unknown
+                if variableData.get("Type") == "Unknown": 
                     unknown_count += 1
                     if debugFlag:
                         print(f"Struct: Primitive, Name: {variableName}, Address: {variableData.get('Address')}")
                     if pruneData:
-                        keep_variable = False  # Mark variable for removal if pruning
+                        validVariable = False  # Mark variable for removal if pruning
 
-            if keep_variable:  # Add variable to filtered data if it should be kept
+            if validVariable:  # Add variable to filtered data if it should be kept
                 filtered_variables[variableName] = variableData
 
         if pruneData and filtered_variables:  # Add globalVar to filtered data if it has valid variables

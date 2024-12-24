@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as elementTree
 import data_parser as dataParser
 import data_processor as dataProcessor
+import data_writer as dataWriter
 import traceback
 import os
 
@@ -51,11 +52,11 @@ except Exception as e:
   traceback.print_exc()     
 
 # Process 4: Data Cleaning - Remove any Variables with "Unknown" or Missing Primitive Data Type
-dataCleaning = False; 
+dataCleaning = True; 
 print("\nExecute: Data Cleaning (Flag = " + str(dataCleaning) + ")")
 if dataCleaning: 
   print("Pre-Filter Data for 'Unknown' or Missing Primitive Data Type:")
-  dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
+  dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, True)
   print("Post-Filter Data for 'Unknown' or Missing Primitive Data Type:")
   dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
 
@@ -70,18 +71,9 @@ dataParser.printFormater(contentList, False)
 
 # Process 7: Write Data to CSV
 try: 
-  for fileName, globalVariables in dataFile.items():
-    if fileName and globalVariables: 
-      stringFileName = fileName.replace('SCADA_', "")
-      outputDataDirectory = f'{outputDataDirectory}\\{stringFileName}.csv'
-      with open(outputDataDirectory, "w", newline="") as file:
-          file.writelines(contentList)     
-  # print(f"CSV written to Destination: {outputDataDirectory}")
-  print(f"Success: Data Written to CSV Files")
-  print("Destination: " + fileName + ".csv")
+  dataWriter.writeDataToCSV(outputDataDirectory, dataFile, contentList)
 except Exception as e: 
   print("Error: Writing Data to Destination - ", e)
-  print("Destination: " + fileName)
   traceback.print_exc() 
 
 print(f"End of Program\n")
