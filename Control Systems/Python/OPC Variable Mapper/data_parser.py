@@ -33,14 +33,16 @@ def fetchDataStructure(xmlFilePath):
 
 
 # Function: Formats the Addresses with Bit index
-# Format Numeric Values to two digits and Prefix non-numeric bit with '0'
+# Format Numeric Values to two digits and Format Hex Chars to Decimal
 def formatAddress(address):
     if '.' in address:
         base, bit = address.split('.')
         if bit.isdigit():
-            return f"{base}.{int(bit):02d}"  
+            # If the bit is a digit, format it to two digits
+            return f"{base}.{int(bit):02d}"
         else:
-            return f"{base}.0{bit}"  
+            # If the bit is a letter (hexadecimal), convert it to its numeric equivalent
+            return f"{base}.{int(bit, 16):02d}"
     return address
 
 
