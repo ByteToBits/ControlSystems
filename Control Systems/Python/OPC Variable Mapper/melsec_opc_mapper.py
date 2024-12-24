@@ -19,35 +19,60 @@ print("\nOPC Variable Mapper (Flavour: MELSEC) Running...")
 # Process 1: Get the Derived Data Types (Structures) from XML File into a Dictionary
 dataStructure = {'Derived Data Types' : []}
 try: 
+
   for files in os.listdir(dataStructureDirectory): 
     xmlFilePath = os.path.join(dataStructureDirectory, files) 
     structType, dataPacket = dataParser.fetchDataStructure(xmlFilePath); 
     dataStructure["Derived Data Types"].append({'Struct': structType, 'Variables': dataPacket})
+
   dataParser.printFormater(dataStructure, False)
   print("Success: Reading & Parsing Data Strucutre")
+
 except Exception as e:
+  
   print("Error: Reading & Parsing Data Strucutre - ", e)
   traceback.print_exc()
 
+
 # Process 2: Get the Raw Data and Format the Data from XML File into a Dictionary
-dataFile = {}
+dataFiles = []
 try: 
+
   for files in os.listdir(rawDataDirectory):
       xmlFilePath = os.path.join(rawDataDirectory, files)
-      dataFile = dataParser.fetchRawData(xmlFilePath)
-  dataParser.printFormater(dataFile, False)
-  print("Success: Reading & Parsing Raw Data")
+      dataFiles.append(dataParser.fetchRawData(xmlFilePath))
+  
+  print("\nSuccess: Reading & Parsing Raw Data")
+  print("Total Number of Raw Data File: " + str(len(dataFiles)))
+
+  for dataFile in dataFiles: 
+    dataParser.printFormater(dataFile, False)
+    for globalVar, rawDataContents in dataFile.items(): 
+      print("File: " + globalVar + ".xml")
+      print("Structure Variables:")
+
+      for structName, structMetaData in rawDataContents.items(): 
+        for structType, structAttributes in structMetaData.items(): 
+          print(structMetaData)
+          # print("Structure Variable Name: " + structName + " | Structure Type: " + structType.get('Struct'))
+
 except Exception as e: 
+
   print("Error: Reading & Parsing Raw Data - ", e)
   traceback.print_exc()          
+
 
 # Process 3: Data Wrangling - Map the raw data variables to their corresponding structure 
 # primitive data types and append types to the dataFile.
 try: 
-  dataFile = dataParser.mapVariableTypes(dataFile, dataStructure)
-  dataParser.printFormater(dataFile, False)
-  print("Success: Data Wrangling Sucess")
+
+  for i in range(len(dataFiles)):
+    dataFiles[i] = dataParser.mapVariableTypes(dataFiles[i], dataStructure)
+    dataParser.printFormater(dataFiles[i], False)
+  print("\nSuccess: Data Wrangling Sucess")
+
 except Exception as e: 
+
   print("Error: Mapping Data Types - ", e)
   traceback.print_exc()     
 
@@ -55,10 +80,11 @@ except Exception as e:
 dataCleaning = True; 
 print("\nExecute: Data Cleaning (Flag = " + str(dataCleaning) + ")")
 if dataCleaning: 
-  print("Pre-Filter Data for 'Unknown' or Missing Primitive Data Type:")
-  dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, True)
-  print("Post-Filter Data for 'Unknown' or Missing Primitive Data Type:")
-  dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
+  for dataFile in dataFiles: 
+    print("Pre-Filter Data for 'Unknown' or Missing Primitive Data Type:")
+    dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
+    print("Post-Filter Data for 'Unknown' or Missing Primitive Data Type:")
+    dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
 
 # Proces 5: Data Filter - Omit the Unecessary Vairables From the Data File based on the Filter.csv
 dataFilter = True; 
