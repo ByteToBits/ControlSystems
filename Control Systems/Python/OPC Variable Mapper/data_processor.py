@@ -6,7 +6,7 @@
 # Param: headerString (String): The Header String Line for the required format of the CSV File
 # Param: trailerPacket (String): The Trailing String Packets to complete Each Line of Data
 # Returns: contentList (List): A List of Strings of Each Line of Contents (Header, Data, ...)
-# Returns: 
+# Returns: stringfileName (stringFileName): The File Name as a String
 
 def formatStringData(dataFile, scanRateSetting, headerString, trailerPacket): 
   contentList = [headerString]
