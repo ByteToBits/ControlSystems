@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as elementTree
 import data_parser as dataParser
+import data_processor as dataProcessor
 import traceback
 import os
 
@@ -62,28 +63,12 @@ if dataCleaning:
 dataFilter = True; 
 print("\nExecute: Data Filter (Flag = " + str(dataFilter) + ")")
 
-# Process 6: Structure the Data 
-print("\nExecute: Data Restructuring")
-contentList = [headerString]
-for fileName, globalVariables in dataFile.items():  # parentKey Need to be Iterated
-  stringFileName = fileName
-  
-  for globalVariable,  variableAttributes in globalVariables.items():
-    structType = variableAttributes.get("Struct")
-    # if globalVariable == "SCADA_FCU_6_10_CV":
-    for attributes in variableAttributes.get("Variables", []): 
-      if structType != "Primitive": 
-        if len(attributes) == 3: 
-          attributeName, attributeType, attributeAddress = attributes
-          permissions = "RO" if attributeName[0:2] == "FB" else "R/W"
-          concatString = f'"{globalVariable}_{attributeName}","{attributeAddress}",{attributeType},1,{permissions}'
-          concatString = f'{concatString},{scanRateSetting},{trailerPacket}\n'
-      contentList.append(concatString)
-
+# Process 6: Construct String Data for CSV File
+print("\nExecute: Data Formatting\n")
+contentList, fileName = dataProcessor.formatStringData(dataFile, scanRateSetting, headerString, trailerPacket)
 dataParser.printFormater(contentList, False)
 
 # Process 7: Write Data to CSV
-stringFileName = ""
 try: 
   for fileName, globalVariables in dataFile.items():
     if fileName and globalVariables: 
@@ -93,10 +78,10 @@ try:
           file.writelines(contentList)     
   # print(f"CSV written to Destination: {outputDataDirectory}")
   print(f"Success: Data Written to CSV Files")
-  print("Destination: " + stringFileName + ".csv")
+  print("Destination: " + fileName + ".csv")
 except Exception as e: 
   print("Error: Writing Data to Destination - ", e)
-  print("Destination: " + stringFileName)
+  print("Destination: " + fileName)
   traceback.print_exc() 
 
 print(f"End of Program\n")
