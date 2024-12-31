@@ -8,6 +8,9 @@
 #ifndef MOTOR_H // Include Guard: Checks if Class is not already defined during Compilation
 #define MOTOR_H // Define: If Class is not Defined, Defines Class and prevents Re-Inclusion
 
+#include <iostream> 
+#include <chrono>
+
 // Structure: SCADA Motor 
 // Operator Interface with the Motor Class
 struct ScadaMotor
@@ -44,6 +47,14 @@ class Motor
 
    private: 
       bool _runStatus; 
+
+      bool AlarmCounter(bool trigger, unsigned int alarmTimer)
+      {  
+         static bool alarmTriggered = false; 
+         static unsigned int alarmCounter; 
+
+         return alarmTriggered; 
+      }
 };
 
 #endif
