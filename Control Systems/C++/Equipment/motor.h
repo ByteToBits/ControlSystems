@@ -50,10 +50,21 @@ class Motor
 
       bool AlarmCounter(bool trigger, unsigned int alarmTimer)
       {  
+         // Initialize Static Variables
+         // Static Variables are Initialized only once during the first call of the function
+         // It persists across subsequent calls to the function
+         // Static Variables will remain unchangedd unless explicitly updated
          static bool alarmTriggered = false; 
-         static unsigned int alarmCounter; 
+         static auto alarmCounter = std::chrono::steady_clock::time_point{}; // Initialize Null Time 
 
-         return alarmTriggered; 
+         if (trigger) {
+            if (!alarmTriggered) {
+               alarmTriggered = true; 
+               alarmCounter = std::chrono::steady_clock::now(); // Track Start Time
+            }
+         }
+
+         return false; 
       }
 };
 
