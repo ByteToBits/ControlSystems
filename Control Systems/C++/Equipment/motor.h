@@ -50,11 +50,12 @@ class Motor
       
       /**
        * @brief Triggers an Activation of an Alarm after the Trigger Condition remain True for a user-defined period of time.
+       * @param enable Enable this particular Alarm (True = Alarm Enabled | False = Alarm Disabled)
        * @param trigger Condition to be met to start the alarm trigger countdown.
        * @param alarmTriggerDelay The delay (in milliseconds) before the alarm active flag is triggered.
        * @return The alarm active flag (true if alarm is triggered, false otherwise).
        */
-      bool AlarmDelayCounter(bool trigger, unsigned int alarmTriggerDelay)
+      bool alarmDelayCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay)
       {  
          // Static Variables are Initialized only once during the first call of the function
          // Static Variables persists across subsequent calls to the function and  will remain unchanged unless explicitly updated
@@ -62,7 +63,7 @@ class Motor
          static bool timerActive = false; 
          static auto alarmStartTime = std::chrono::steady_clock::time_point{}; // Initialize Null Time 
 
-         if (trigger) 
+         if (trigger && enable)
          {
             if (!timerActive) 
             {
@@ -84,6 +85,10 @@ class Motor
             activeAlarm = false; 
          }
          return activeAlarm; 
+      }
+
+      float linearInterpolation(float x1, float x2, float y1, float y2){
+         return x1 + x2 + y1 + y2; 
       }
 };
 
