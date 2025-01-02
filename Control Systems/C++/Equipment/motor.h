@@ -47,24 +47,43 @@ class Motor
 
    private: 
       bool _runStatus; 
-
-      bool AlarmCounter(bool trigger, unsigned int alarmTimer)
+      
+      /**
+       * @brief Triggers an Activation of an Alarm after the Trigger Condition remain True for a user-defined period of time.
+       * @param trigger Condition to be met to start the alarm trigger countdown.
+       * @param alarmTriggerDelay The delay (in milliseconds) before the alarm active flag is triggered.
+       * @return The alarm active flag (true if alarm is triggered, false otherwise).
+       */
+      bool AlarmDelayCounter(bool trigger, unsigned int alarmTriggerDelay)
       {  
-         // Initialize Static Variables
          // Static Variables are Initialized only once during the first call of the function
-         // It persists across subsequent calls to the function
-         // Static Variables will remain unchangedd unless explicitly updated
-         static bool alarmTriggered = false; 
-         static auto alarmCounter = std::chrono::steady_clock::time_point{}; // Initialize Null Time 
+         // Static Variables persists across subsequent calls to the function and  will remain unchanged unless explicitly updated
+         static bool activeAlarm = false;
+         static bool timerActive = false; 
+         static auto alarmStartTime = std::chrono::steady_clock::time_point{}; // Initialize Null Time 
 
-         if (trigger) {
-            if (!alarmTriggered) {
-               alarmTriggered = true; 
-               alarmCounter = std::chrono::steady_clock::now(); // Track Start Time
+         if (trigger) 
+         {
+            if (!timerActive) 
+            {
+               timerActive = true; 
+               alarmStartTime = std::chrono::steady_clock::now(); // Track Start Time
+            }
+            // Calculate the Elapsed Time based on the Current Time - Start Time
+            auto currentTime = std::chrono::steady_clock::now();
+            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime-alarmStartTime).count(); 
+
+            if (elapsedTime >= alarmTriggerDelay) 
+            {
+               activeAlarm = true; 
             }
          }
-
-         return false; 
+         else
+         {
+            timerActive = false; 
+            activeAlarm = false; 
+         }
+         return activeAlarm; 
       }
 };
 
