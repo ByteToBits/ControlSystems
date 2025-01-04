@@ -11,6 +11,8 @@
 #include <iostream> 
 #include <chrono>
 
+#include <../Functions/utility_functions.h>
+
 // Structure: SCADA Motor 
 // Operator Interface with the Motor Class
 struct ScadaMotor
@@ -59,10 +61,8 @@ class Motor
       Motor(); // Constructor
 
    private: 
-
-      bool alarmDelayCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
-      float linearInterpolation(float x, float x1, float x2, float y1, float y2); 
-      
+      // bool failToStartCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
+      float scaleSpeedInput(float rawAnalogInput, float rawAnalogInputMin, float rawAnalogInputMax, float engineeringUnitMin, float engineeringUnitMax); 
 };
 
 #endif
