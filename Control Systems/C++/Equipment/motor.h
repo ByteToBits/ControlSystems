@@ -31,65 +31,38 @@ struct ScadaMotor
    unsigned int ctrl_FailToStartTimeLimit; 
    unsigned int ctrl_FailToStopTimeLimit; 
 
-   // Control Variables: Simulate Inputs (Should Physical Inputs be Unavailable)
-   bool ctrl_SimulationMode; 
-   bool ctrl_SimulateRunStatus; 
-   bool ctrl_SimulateTripStatus; 
-   bool ctrl_SimulateSelectorMode; 
+   // Constructor: Initialize Variables
+   ScadaMotor()
+     : fb_RunStatus(false),
+       fb_SelectorMode(false),
+       fb_TripStatus(false),
+       fb_AlarmState(0),
+       fb_RunHours(0), 
+       fb_FailToStartCounter(0),
+       fb_FailToStopCounter(0),
+       ctrl_ControlMode(0),
+       ctrl_FailToStartTimeLimit(60),
+       ctrl_FailToStopTimeLimit(60) {}
+
 };
 
 class Motor 
 {
    public:
+
       bool runStatus; 
       bool tripStatus; 
-      bool selectorMode;      
+      bool selectorMode; 
+
+      ScadaMotor scadaMotor; // Interface 
+
+      Motor(); // Constructor
 
    private: 
-      bool _runStatus; 
+
+      bool alarmDelayCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
+      float linearInterpolation(float x, float x1, float x2, float y1, float y2); 
       
-      /**
-       * @brief Triggers an Activation of an Alarm after the Trigger Condition remain True for a user-defined period of time.
-       * @param enable Enable this particular Alarm (True = Alarm Enabled | False = Alarm Disabled)
-       * @param trigger Condition to be met to start the alarm trigger countdown.
-       * @param alarmTriggerDelay The delay (in milliseconds) before the alarm active flag is triggered.
-       * @return The alarm active flag (true if alarm is triggered, false otherwise).
-       */
-      bool alarmDelayCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay)
-      {  
-         // Static Variables are Initialized only once during the first call of the function
-         // Static Variables persists across subsequent calls to the function and  will remain unchanged unless explicitly updated
-         static bool activeAlarm = false;
-         static bool timerActive = false; 
-         static auto alarmStartTime = std::chrono::steady_clock::time_point{}; // Initialize Null Time 
-
-         if (trigger && enable)
-         {
-            if (!timerActive) 
-            {
-               timerActive = true; 
-               alarmStartTime = std::chrono::steady_clock::now(); // Track Start Time
-            }
-            // Calculate the Elapsed Time based on the Current Time - Start Time
-            auto currentTime = std::chrono::steady_clock::now();
-            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime-alarmStartTime).count(); 
-
-            if (elapsedTime >= alarmTriggerDelay) 
-            {
-               activeAlarm = true; 
-            }
-         }
-         else
-         {
-            timerActive = false; 
-            activeAlarm = false; 
-         }
-         return activeAlarm; 
-      }
-
-      float linearInterpolation(float x1, float x2, float y1, float y2){
-         return x1 + x2 + y1 + y2; 
-      }
 };
 
 #endif
