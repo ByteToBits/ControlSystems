@@ -49,33 +49,4 @@ namespace UitlityFunctions
 
         return std::make_tuple(activeAlarm, elapsedTime); 
     }
-    
-    /**
-     * @brief Clamps the Value with a Specifiec Maximum and Minimum Range.
-     * Template allows the implementation that works with multiple data Types ensures type safety during compilation.
-     * Templates are resolved during compile time, leading to less runtime overhead
-     * @param value The Value to be Clamped
-     * @param minimum The Minimum Value
-     * @param maximum The Maximum Value
-     * @return The Clamped Value  
-     */
-    template<typename T>
-    T clamp(T value, T minimum, T maximum)
-    {
-        return std::max(minimum, std::min(maximum, value)); 
-    }
-
-    /**
-     * @brief Performs linear interpolation to estimate the value of a function at a given point.
-     * @param x  The independent variable at which to interpolate.
-     * @param x1 The first known independent variable.
-     * @param x2 The second known independent variable.
-     * @param y1 The dependent variable corresponding to x1.
-     * @param y2 The dependent variable corresponding to x2.
-     * @return The interpolated value of 'y' at the given 'x'
-     */
-    float linearInterpolation(float x, float x1, float x2, float y1, float y2)
-    {
-        return y1 + (x - x1)*((y2 - y1)/(x2 - x1)); 
-    }
 }

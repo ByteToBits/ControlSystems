@@ -22,8 +22,22 @@ namespace UtilityFunctions
         return std::max(minimum, std::min(maximum, value)); 
     }
 
+    /**
+     * @brief Performs linear interpolation to estimate the value of a function at a given point.
+     * @param x  The independent variable at which to interpolate.
+     * @param x1 The first known independent variable.
+     * @param x2 The second known independent variable.
+     * @param y1 The dependent variable corresponding to x1.
+     * @param y2 The dependent variable corresponding to x2.
+     * @return The interpolated value of 'y' at the given 'x'
+     */
+    template <typename T>
+    T linearInterpolation(T x, T x1, T x2, T y1, T y2)
+    {
+        return y1 + (x - x1)*((y2 - y1)/(x2 - x1)); 
+    }
+
     bool alarmDelayCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
-    float linearInterpolation(float x, float x1, float x2, float y1, float y2); 
 }
 
 #endif

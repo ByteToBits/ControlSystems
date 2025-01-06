@@ -7,6 +7,7 @@
 
 #ifndef MOTOR_H // Include Guard: Checks if Class is not already defined during Compilation
 #define MOTOR_H // Define: If Class is not Defined, Defines Class and prevents Re-Inclusion
+// #pragma once - Short Way of doing it for ifndef
 
 #include <iostream> 
 #include <chrono>
@@ -58,10 +59,9 @@ class Motor
 
       ScadaMotor scadaMotor; // Interface 
 
-      Motor(); // Constructor
-
    private: 
-      // bool failToStartCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
+      bool failToStartCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
+      bool failToStopCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
       float scaleSpeedInput(float rawAnalogInput, float rawAnalogInputMin, float rawAnalogInputMax, float engineeringUnitMin, float engineeringUnitMax); 
 };
 
