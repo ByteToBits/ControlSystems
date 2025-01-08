@@ -1,4 +1,5 @@
 
+import csv
 
 # Function: Format Data File Dictionary to String Format
 # Param: dataFile (dict): The Contents Extracted from the Raw Daw XML File
@@ -31,3 +32,14 @@ def formatStringData(dataFile, scanRateSetting, headerString, trailerPacket):
 
   return contentList, stringfileName
   
+
+def readCSV(fileName): 
+  array = []
+  with open(fileName) as file: 
+    csv_reader = csv.reader(file)
+    for row in csv_reader: 
+      array.append(row)
+  return array
+       
+
+

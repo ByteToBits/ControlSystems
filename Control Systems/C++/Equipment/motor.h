@@ -46,7 +46,6 @@ struct ScadaMotor
        ctrl_ControlMode(0),
        ctrl_FailToStartTimeLimit(60),
        ctrl_FailToStopTimeLimit(60) {}
-
 };
 
 class Motor 

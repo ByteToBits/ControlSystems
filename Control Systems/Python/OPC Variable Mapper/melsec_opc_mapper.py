@@ -6,7 +6,7 @@ import traceback
 import os
 
 rawDataDirectory= r"Control Systems\Python\OPC Variable Mapper\Data\Raw Data"
-dataStructureDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Data Structures" 
+dataStructureDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Data Structures\FX5" 
 outputDataDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Output"
 
 scanRateSetting = 1000; 
@@ -52,12 +52,9 @@ try:
       print("Structure Variables:")
 
       for structName, structMetaData in rawDataContents.items(): 
-        for structType, structAttributes in structMetaData.items(): 
-          print(structMetaData)
-          # print("Structure Variable Name: " + structName + " | Structure Type: " + structType.get('Struct'))
+        print("Struct: " + structName + " | Structure Type: " + structMetaData.get('Struct'))
 
 except Exception as e: 
-
   print("Error: Reading & Parsing Raw Data - ", e)
   traceback.print_exc()          
 
@@ -65,14 +62,12 @@ except Exception as e:
 # Process 3: Data Wrangling - Map the raw data variables to their corresponding structure 
 # primitive data types and append types to the dataFile.
 try: 
-
   for i in range(len(dataFiles)):
     dataFiles[i] = dataParser.mapVariableTypes(dataFiles[i], dataStructure)
     dataParser.printFormater(dataFiles[i], False)
   print("\nSuccess: Data Wrangling Sucess")
 
 except Exception as e: 
-
   print("Error: Mapping Data Types - ", e)
   traceback.print_exc()     
 
@@ -87,7 +82,7 @@ if dataCleaning:
     dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
 
 # Proces 5: Data Filter - Omit the Unecessary Vairables From the Data File based on the Filter.csv
-dataFilter = True; 
+dataFilter = False; 
 print("\nExecute: Data Filter (Flag = " + str(dataFilter) + ")")
 
 # Process 6: Construct String Data for CSV File
@@ -103,3 +98,11 @@ except Exception as e:
   traceback.print_exc() 
 
 print(f"End of Program\n")
+
+
+print("Test Read")
+tempArray = dataProcessor.readCSV("Control Systems\Python\OPC Variable Mapper\Data\Filter\FX5\SCADA_Motor_VSD.csv")
+
+for row in tempArray: 
+  print(row)
+
