@@ -85,39 +85,39 @@ def fetchRawData(xmlFilePath):
         for variable in globalVar.findall('.//variable', namespace):
             structName = variable.get('name')  # Get the variable name
             
-            if structName == "SCADA_FCU_6_10_VSD": 
-                # Check if it is a structured or primitive type
-                typeElement = variable.find('.//type', namespace)
-                structTypeElement = typeElement.find('.//derived', namespace) if typeElement is not None else None
+            # if structName == "SCADA_FCU_6_10_VSD" or structName == "SCADA_FCU_6_10_CV": # ---------------------------------------------------------------------------------- Remove this Section
+            # Check if it is a structured or primitive type
+            typeElement = variable.find('.//type', namespace)
+            structTypeElement = typeElement.find('.//derived', namespace) if typeElement is not None else None
 
-                if structTypeElement is not None:
-                    # Structured variable
-                    structType = structTypeElement.get('name')
-                    variableData = {
-                        "Struct": structType,
-                        "Variables": []
-                    }
-                    # Find all member elements under variableStructDeviceAssignment
-                    variables = variable.findall(".//addData/data/variableStructDeviceAssignment/member", namespace)
-                    for variable in variables:
-                        variableName = variable.get('name')
-                        variableAddress = formatAddress(variable.get('address'))
-
-                        # Add variable details as a list
-                        variableData["Variables"].append([variableName, variableAddress])
-
-                else:
-                    # Primitive variable
-                    variableType = getPrimitiveType(typeElement, namespace)
+            if structTypeElement is not None:
+                # Structured variable
+                structType = structTypeElement.get('name')
+                variableData = {
+                    "Struct": structType,
+                    "Variables": []
+                }
+                # Find all member elements under variableStructDeviceAssignment
+                variables = variable.findall(".//addData/data/variableStructDeviceAssignment/member", namespace)
+                for variable in variables:
+                    variableName = variable.get('name')
                     variableAddress = formatAddress(variable.get('address'))
-                    variableData = {
-                        "Struct": "Primitive", 
-                        "Type": variableType,
-                        "Address": variableAddress
-                    }
 
-                # Add the variable to the scadaVariable dictionary
-                scadaVariable[structName] = variableData
+                    # Add variable details as a list
+                    variableData["Variables"].append([variableName, variableAddress])
+
+            else:
+                # Primitive variable
+                variableType = getPrimitiveType(typeElement, namespace)
+                variableAddress = formatAddress(variable.get('address'))
+                variableData = {
+                    "Struct": "Primitive", 
+                    "Type": variableType,
+                    "Address": variableAddress
+                }
+
+            # Add the variable to the scadaVariable dictionary
+            scadaVariable[structName] = variableData
 
         # Add the globalVar to the dataFile dictionary
         dataFile[globalVarName] = scadaVariable

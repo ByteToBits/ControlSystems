@@ -103,16 +103,34 @@ for dataFile in dataFiles:
                 for var in variables:
                     print(f"      {var}")
 
-filterFileName = filterDirectory + "\\" + str(filterFileName[0]) + ".csv"
-print(filterFileName)
+for filterFiles in filterFileName: 
 
-popValues = []
-if (dataFilter): 
-  tempArray = dataProcessor.readCSV(filterFileName)
-  for i in range(2, len(tempArray)): 
-    if tempArray[i][0].lower() != "yes": 
-      popValues.append(tempArray[i][1])
-      print(tempArray[i][1])
+  if filterFiles != 'Primitive': 
+    try: 
+      filterFiles = filterDirectory + "\\" + str(filterFiles) + ".csv"
+      print(filterFiles)
+
+      popValues = []
+      if (dataFilter): 
+        tempArray = dataProcessor.readCSV(filterFiles)
+        for i in range(2, len(tempArray)): 
+          if tempArray[i][0].lower() != "yes": 
+            popValues.append(tempArray[i][1])
+            print(tempArray[i][1])
+
+      # Iterating through the dataFiles to filter the Variables
+      for dataFile in dataFiles:
+          if isinstance(dataFile, dict):
+              for locationGroup, globalVariables in dataFile.items():
+                  for scadaVariable, metadata in globalVariables.items():
+                      # Filter the 'Variables' array
+                      metadata['Variables'] = [
+                          var for var in metadata.get('Variables', []) 
+                          if var[0] not in popValues
+                    ]
+    except Exception as e: 
+      print("Failed to Filter Data for " + str(filterFiles) + " | Exception" + e)
+
 
 # Process 6: Construct String Data for CSV File
 print("\nExecute: Data Formatting\n")
@@ -120,23 +138,13 @@ contentList, fileName = dataProcessor.formatStringData(dataFile, scanRateSetting
 dataParser.printFormater(contentList, False)
 
 # Get Variable Type
-print(dataFiles[0]['SCADA_AdhesiveRoom']['SCADA_FCU_6_10_VSD']['Struct'])
+# print(dataFiles[0]['SCADA_AdhesiveRoom']['SCADA_FCU_6_10_VSD']['Struct'])
 
-# Iterating through the dataFiles to filter the Variables
-for dataFile in dataFiles:
-    if isinstance(dataFile, dict):
-        for locationGroup, globalVariables in dataFile.items():
-            for scadaVariable, metadata in globalVariables.items():
-                # Filter the 'Variables' array
-                metadata['Variables'] = [
-                    var for var in metadata.get('Variables', []) 
-                    if var[0] not in popValues
-                ]
 
 # Print the updated dataFiles for verification
 print(dataFiles)
 
-
+print("\n")
 
 
 

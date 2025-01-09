@@ -37,7 +37,7 @@ def formatStringData(dataFile, scanRateSetting, headerString, trailerPacket):
         contentList.append(concatString)
 
   return contentList, stringfileName
-  
+
 
 def readCSV(fileName): 
   """
@@ -57,5 +57,4 @@ def readCSV(fileName):
       stringArray.append(row)
   return stringArray
        
-
 
