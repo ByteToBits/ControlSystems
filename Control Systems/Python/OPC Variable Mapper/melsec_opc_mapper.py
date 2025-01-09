@@ -8,6 +8,7 @@ import os
 rawDataDirectory= r"Control Systems\Python\OPC Variable Mapper\Data\Raw Data"
 dataStructureDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Data Structures\FX5" 
 outputDataDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Output"
+filterDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Filter\FX5"
 
 scanRateSetting = 1000; 
 headerString = ("Tag Name,Address,Data Type,Respect Data Type,Client Access,Scan Rate,Scaling,Raw Low,Raw High,"
@@ -64,12 +65,13 @@ except Exception as e:
 try: 
   for i in range(len(dataFiles)):
     dataFiles[i] = dataParser.mapVariableTypes(dataFiles[i], dataStructure)
-    dataParser.printFormater(dataFiles[i], False)
+    dataParser.printFormater(dataFiles[i], True)
   print("\nSuccess: Data Wrangling Sucess")
 
 except Exception as e: 
   print("Error: Mapping Data Types - ", e)
   traceback.print_exc()     
+
 
 # Process 4: Data Cleaning - Remove any Variables with "Unknown" or Missing Primitive Data Type
 dataCleaning = True; 
@@ -82,13 +84,64 @@ if dataCleaning:
     dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
 
 # Proces 5: Data Filter - Omit the Unecessary Vairables From the Data File based on the Filter.csv
-dataFilter = False; 
+dataFilter = True; 
 print("\nExecute: Data Filter (Flag = " + str(dataFilter) + ")")
+
+filterFileName = []
+# Iterating through the list
+for dataFile in dataFiles:
+    # Check if the current element is a dictionary
+    if isinstance(dataFile, dict):
+        for locationGroup, globalVariables in dataFile.items():
+            print(f"Room: {locationGroup}")
+            for scadaVariable, metadata in globalVariables.items():
+                print(f"  SCADA Variable: {scadaVariable}")
+                structType = metadata.get('Struct')
+                filterFileName.append(structType)
+                variables = metadata.get('Variables', [])  # Safely get 'Variables'
+                print("    Variables:")
+                for var in variables:
+                    print(f"      {var}")
+
+filterFileName = filterDirectory + "\\" + str(filterFileName[0]) + ".csv"
+print(filterFileName)
+
+popValues = []
+if (dataFilter): 
+  tempArray = dataProcessor.readCSV(filterFileName)
+  for i in range(2, len(tempArray)): 
+    if tempArray[i][0].lower() != "yes": 
+      popValues.append(tempArray[i][1])
+      print(tempArray[i][1])
 
 # Process 6: Construct String Data for CSV File
 print("\nExecute: Data Formatting\n")
 contentList, fileName = dataProcessor.formatStringData(dataFile, scanRateSetting, headerString, trailerPacket)
 dataParser.printFormater(contentList, False)
+
+# Get Variable Type
+print(dataFiles[0]['SCADA_AdhesiveRoom']['SCADA_FCU_6_10_VSD']['Struct'])
+
+# Iterating through the dataFiles to filter the Variables
+for dataFile in dataFiles:
+    if isinstance(dataFile, dict):
+        for locationGroup, globalVariables in dataFile.items():
+            for scadaVariable, metadata in globalVariables.items():
+                # Filter the 'Variables' array
+                metadata['Variables'] = [
+                    var for var in metadata.get('Variables', []) 
+                    if var[0] not in popValues
+                ]
+
+# Print the updated dataFiles for verification
+print(dataFiles)
+
+
+
+
+
+
+
 
 # Process 7: Write Data to CSV
 try: 
@@ -100,9 +153,14 @@ except Exception as e:
 print(f"End of Program\n")
 
 
-print("Test Read")
-tempArray = dataProcessor.readCSV("Control Systems\Python\OPC Variable Mapper\Data\Filter\FX5\SCADA_Motor_VSD.csv")
+# print("Test Read")
+# tempArray = dataProcessor.readCSV("Control Systems\Python\OPC Variable Mapper\Data\Filter\FX5\SCADA_Motor_VSD.csv")
 
-for row in tempArray: 
-  print(row)
+# for row in tempArray: 
+#   print(row)
 
+# mapPermission = tempArray[2][0]
+# childVariable = tempArray[2][1]
+
+# print(mapPermission.lower())
+# print(childVariable)

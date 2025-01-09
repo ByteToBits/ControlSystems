@@ -1,15 +1,21 @@
 
 import csv
 
-# Function: Format Data File Dictionary to String Format
-# Param: dataFile (dict): The Contents Extracted from the Raw Daw XML File
-# Param: scanRate (int): The Scan Rate of the OPC Server for each Tags in Milliseconds
-# Param: headerString (String): The Header String Line for the required format of the CSV File
-# Param: trailerPacket (String): The Trailing String Packets to complete Each Line of Data
-# Returns: contentList (List): A List of Strings of Each Line of Contents (Header, Data, ...)
-# Returns: stringfileName (stringFileName): The File Name as a String
-
 def formatStringData(dataFile, scanRateSetting, headerString, trailerPacket): 
+  """
+  Function: Format Data File Dictionary to String Format
+
+  Parameters:
+  dataFile (dict): The Contents Extracted from the Raw Daw XML File
+  scanRate (int): The Scan Rate of the OPC Server for each Tags in Milliseconds
+  headerString (String): The Header String Line for the required format of the CSV File
+  Param: trailerPacket (String): The Trailing String Packets to complete Each Line of Data
+
+  Returns:
+  contentList (List): A List of Strings of Each Line of Contents (Header, Data, ...)
+  stringfileName (stringFileName): The File Name as a String
+  """
+  
   contentList = [headerString]
   stringfileName = ""
   # Iterate through the Parent Key
@@ -34,12 +40,22 @@ def formatStringData(dataFile, scanRateSetting, headerString, trailerPacket):
   
 
 def readCSV(fileName): 
-  array = []
+  """
+  Function: Format Data File Dictionary to String Format
+
+  Parameters:
+  fileName (dict): The File Name and Path
+
+  Returns:
+  stringArray: A 2-D String Array Containing the CSV Contents
+  """
+
+  stringArray = []
   with open(fileName) as file: 
     csv_reader = csv.reader(file)
     for row in csv_reader: 
-      array.append(row)
-  return array
+      stringArray.append(row)
+  return stringArray
        
 
 
