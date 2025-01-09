@@ -65,7 +65,7 @@ except Exception as e:
 try: 
   for i in range(len(dataFiles)):
     dataFiles[i] = dataParser.mapVariableTypes(dataFiles[i], dataStructure)
-    dataParser.printFormater(dataFiles[i], True)
+    dataParser.printFormater(dataFiles[i], False)
   print("\nSuccess: Data Wrangling Sucess")
 
 except Exception as e: 
@@ -93,32 +93,32 @@ for dataFile in dataFiles:
     # Check if the current element is a dictionary
     if isinstance(dataFile, dict):
         for locationGroup, globalVariables in dataFile.items():
-            print(f"Room: {locationGroup}")
+            # print(f"Room: {locationGroup}")
             for scadaVariable, metadata in globalVariables.items():
-                print(f"  SCADA Variable: {scadaVariable}")
+                # print(f"  SCADA Variable: {scadaVariable}")
                 structType = metadata.get('Struct')
                 filterFileName.append(structType)
                 variables = metadata.get('Variables', [])  # Safely get 'Variables'
-                print("    Variables:")
-                for var in variables:
-                    print(f"      {var}")
+                # print("    Variables:")
+                # for var in variables:
+                #     print(f"      {var}")
 
-for filterFiles in filterFileName: 
+for filterFile in filterFileName: 
 
-  if filterFiles != 'Primitive': 
+  if filterFile != 'Primitive': 
     try: 
-      filterFiles = filterDirectory + "\\" + str(filterFiles) + ".csv"
-      print(filterFiles)
+      filterFilePath = filterDirectory + "\\" + str(filterFile) + ".csv"
+      # print(filterFilePath)
 
       popValues = []
       if (dataFilter): 
-        tempArray = dataProcessor.readCSV(filterFiles)
+        tempArray = dataProcessor.readCSV(filterFilePath)
         for i in range(2, len(tempArray)): 
           if tempArray[i][0].lower() != "yes": 
             popValues.append(tempArray[i][1])
-            print(tempArray[i][1])
+            # print(tempArray[i][1])
 
-      # Iterating through the dataFiles to filter the Variables
+      # Filter Child Variables based on the Filter CSV Files
       for dataFile in dataFiles:
           if isinstance(dataFile, dict):
               for locationGroup, globalVariables in dataFile.items():
@@ -127,9 +127,10 @@ for filterFiles in filterFileName:
                       metadata['Variables'] = [
                           var for var in metadata.get('Variables', []) 
                           if var[0] not in popValues
-                    ]
+                      ]
+
     except Exception as e: 
-      print("Failed to Filter Data for " + str(filterFiles) + " | Exception" + e)
+      print("Failed to Filter Data for " + str(filterFilePath) + " | Exception" + e)
 
 
 # Process 6: Construct String Data for CSV File
