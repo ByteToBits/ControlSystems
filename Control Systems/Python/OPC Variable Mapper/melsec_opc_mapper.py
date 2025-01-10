@@ -86,70 +86,15 @@ if dataCleaning:
 # Proces 5: Data Filter - Omit the Unecessary Vairables From the Data File based on the Filter.csv
 dataFilter = True; 
 print("\nExecute: Data Filter (Flag = " + str(dataFilter) + ")")
-
-filterFileName = []
-# Iterating through the list
-for dataFile in dataFiles:
-    # Check if the current element is a dictionary
-    if isinstance(dataFile, dict):
-        for locationGroup, globalVariables in dataFile.items():
-            # print(f"Room: {locationGroup}")
-            for scadaVariable, metadata in globalVariables.items():
-                # print(f"  SCADA Variable: {scadaVariable}")
-                structType = metadata.get('Struct')
-                filterFileName.append(structType)
-                variables = metadata.get('Variables', [])  # Safely get 'Variables'
-                # print("    Variables:")
-                # for var in variables:
-                #     print(f"      {var}")
-
-for filterFile in filterFileName: 
-
-  if filterFile != 'Primitive': 
-    try: 
-      filterFilePath = filterDirectory + "\\" + str(filterFile) + ".csv"
-      # print(filterFilePath)
-
-      popValues = []
-      if (dataFilter): 
-        tempArray = dataProcessor.readCSV(filterFilePath)
-        for i in range(2, len(tempArray)): 
-          if tempArray[i][0].lower() != "yes": 
-            popValues.append(tempArray[i][1])
-            # print(tempArray[i][1])
-
-      # Filter Child Variables based on the Filter CSV Files
-      for dataFile in dataFiles:
-          if isinstance(dataFile, dict):
-              for locationGroup, globalVariables in dataFile.items():
-                  for scadaVariable, metadata in globalVariables.items():
-                      # Filter the 'Variables' array
-                      metadata['Variables'] = [
-                          var for var in metadata.get('Variables', []) 
-                          if var[0] not in popValues
-                      ]
-
-    except Exception as e: 
-      print("Failed to Filter Data for " + str(filterFilePath) + " | Exception" + e)
+filterFiles = dataProcessor.getStructType(dataFiles) # Get the Structure Type which Corresponds to the Filter File Name
+dataFiles = dataProcessor.filterVariables(True, dataFiles, filterFiles, filterDirectory) 
+dataParser.printFormater(dataFiles, False)
 
 
 # Process 6: Construct String Data for CSV File
 print("\nExecute: Data Formatting\n")
 contentList, fileName = dataProcessor.formatStringData(dataFile, scanRateSetting, headerString, trailerPacket)
 dataParser.printFormater(contentList, False)
-
-# Get Variable Type
-# print(dataFiles[0]['SCADA_AdhesiveRoom']['SCADA_FCU_6_10_VSD']['Struct'])
-
-
-# Print the updated dataFiles for verification
-print(dataFiles)
-
-print("\n")
-
-
-
-
 
 
 # Process 7: Write Data to CSV
@@ -160,16 +105,3 @@ except Exception as e:
   traceback.print_exc() 
 
 print(f"End of Program\n")
-
-
-# print("Test Read")
-# tempArray = dataProcessor.readCSV("Control Systems\Python\OPC Variable Mapper\Data\Filter\FX5\SCADA_Motor_VSD.csv")
-
-# for row in tempArray: 
-#   print(row)
-
-# mapPermission = tempArray[2][0]
-# childVariable = tempArray[2][1]
-
-# print(mapPermission.lower())
-# print(childVariable)

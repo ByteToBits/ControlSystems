@@ -58,3 +58,60 @@ def readCSV(fileName):
   return stringArray
        
 
+def getStructType(dataFiles): 
+  """
+  Function: Get the Structure Type from the List
+
+  Parameters: 
+  dataFiles(List): The List containibng the XML File Information
+
+  Returns: 
+  structTypeList(List): Returns a List of all the Structure Types that exist in the XML File
+  """
+  
+  structTypeList = []
+  for dataFile in dataFiles:
+      # Check if the current element is a dictionary
+      if isinstance(dataFile, dict):
+          for locationGroup, globalVariables in dataFile.items():
+              for scadaVariable, metadata in globalVariables.items():
+                  structType = metadata.get('Struct')
+                  structTypeList.append(structType)
+                  variables = metadata.get('Variables', [])
+  return structTypeList
+
+
+def filterVariables(enable, dataFiles, filterFiles, filterDirectory):
+
+  filterDataFiles = []
+
+  if (enable): 
+    for filterFile in filterFiles: 
+      if filterFile != 'Primitive': 
+
+        try: 
+          filterFilePath = filterDirectory + "\\" + str(filterFile) + ".csv"
+          # print(filterFilePath)
+          popValues = []
+          tempArray = readCSV(filterFilePath)
+
+          for i in range(2, len(tempArray)): 
+            if tempArray[i][0].lower() != "yes": 
+              popValues.append(tempArray[i][1])
+
+          # Filter Child Variables based on the Filter CSV Files
+          for dataFile in dataFiles:
+              if isinstance(dataFile, dict):
+                  for locationGroup, globalVariables in dataFile.items():
+                      for scadaVariable, metadata in globalVariables.items():
+                          # Filter the 'Variables' array
+                          metadata['Variables'] = [
+                              var for var in metadata.get('Variables', []) 
+                              if var[0] not in popValues ]
+          
+          filterDataFiles = dataFiles
+
+        except Exception as e: 
+          print("Failed to Filter Data for " + str(filterFilePath) + " | Exception" + e)
+  
+  return filterDataFiles
