@@ -54,5 +54,11 @@
         "text_encoding": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp"
+    },
+
+    "python.linting.pylintArgs": ["--disable=E0401"],
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none"
     }
+
 }
