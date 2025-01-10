@@ -5,10 +5,12 @@ import data_writer as dataWriter
 import traceback
 import os
 
+controllerType = "FX5" # iQR
+
 rawDataDirectory= r"Control Systems\Python\OPC Variable Mapper\Data\Raw Data"
-dataStructureDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Data Structures\FX5" 
+dataStructureDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Data Structures\\" + controllerType
 outputDataDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Output"
-filterDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Filter\FX5"
+filterDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Filter\\" + controllerType
 
 scanRateSetting = 1000; 
 headerString = ("Tag Name,Address,Data Type,Respect Data Type,Client Access,Scan Rate,Scaling,Raw Low,Raw High,"
@@ -52,8 +54,8 @@ try:
       print("File: " + globalVar + ".xml")
       print("Structure Variables:")
 
-      for structName, structMetaData in rawDataContents.items(): 
-        print("Struct: " + structName + " | Structure Type: " + structMetaData.get('Struct'))
+      # for structName, structMetaData in rawDataContents.items(): 
+      #   print("Struct: " + structName + " | Structure Type: " + structMetaData.get('Struct'))
 
 except Exception as e: 
   print("Error: Reading & Parsing Raw Data - ", e)
