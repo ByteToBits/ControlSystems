@@ -1,15 +1,22 @@
 
-#include "utility_functions.h"
+#include "utilityFunctions.h"
 #include <tuple>
 #include <map>
 
 // A namespace in C++ is essentially a way to group related functions, classes, variables, or objects together under a single name
 // This organizes codes and prevents conflicts 
 
-namespace UitlityFunctions 
+// This Program will be compiled into a Static Library since it's call by many other Functions 
+// Step 1: Compile as an Object File
+// Step 2: Compile Object File as a Static Link
+// Step 3: Compile and Link "Main Program"
+
+namespace UtilityFunctions 
 {   
-    //  Rising Edge: For Tracking the States of the Pulse Detection
-    static std::map<int, bool> risingEdgePreviousStates;   // Tracks Pulse States
+    namespace { // Anonymous Namespace
+        //  Rising Edge: For Tracking the States of the Pulse Detection
+        std::map<int, bool> risingEdgePreviousStates;   // Tracks Pulse States
+    }
 
     /**
      * @brief Triggers an Activation of an Alarm after the Trigger Condition remain True for a user-defined period of time.

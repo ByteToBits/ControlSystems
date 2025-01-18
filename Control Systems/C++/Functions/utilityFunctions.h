@@ -37,7 +37,7 @@ namespace UtilityFunctions
         return y1 + (x - x1)*((y2 - y1)/(x2 - x1)); 
     }
 
-    bool alarmDelayCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
+    std::tuple<bool, unsigned int> alarmDelayCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
 
     bool risingEdge(int signalID, bool signalTrigger); 
 }
