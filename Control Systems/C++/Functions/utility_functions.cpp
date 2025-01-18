@@ -9,8 +9,7 @@
 namespace UitlityFunctions 
 {   
     //  Rising Edge: For Tracking the States of the Pulse Detection
-    static std::map<int, bool> risingEdgePreviousStates; // Tracks Previous Signal State
-    static std::map<int, bool> risingEdgePulseStates;   // Tracks Pulse States
+    static std::map<int, bool> risingEdgePreviousStates;   // Tracks Pulse States
 
     /**
      * @brief Triggers an Activation of an Alarm after the Trigger Condition remain True for a user-defined period of time.
@@ -55,14 +54,18 @@ namespace UitlityFunctions
         return std::make_tuple(activeAlarm, elapsedTime); 
     }
 
-    bool risingEdge(int signalID, bool &trigger)
-    {
-        // Check it's a Rising Flag Condition (Previous State: Low | Current State: High)
-        if (!risingEdgePreviousStates[signalID] && trigger == true)
-        {
-            risingEdgePulseStates[signalID] = true;
-        }
+   bool risingEdge(int signalID, bool &trigger)
+    {   
+        bool risingEdgeFlag= false; 
 
-        
+        // Check it's a Rising Flag Condition (Previous State: Low | Current State: High)
+        if (!risingEdgePreviousStates[signalID] && trigger == true) // (Low -> High)
+        {   
+            risingEdgeFlag = true; 
+        }
+        // Update Previous State for the Next Method Call
+        risingEdgePreviousStates[signalID] = trigger; 
+
+        return risingEdgeFlag; 
     }
 }
