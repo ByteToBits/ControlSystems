@@ -54,17 +54,23 @@ namespace UitlityFunctions
         return std::make_tuple(activeAlarm, elapsedTime); 
     }
 
-   bool risingEdge(int signalID, bool &trigger)
+    /**
+     * @brief Detects a Rising Edge Signal and Returns a Bool during the Rising Edge Stae
+     * @param signalID A Unique Tracking ID for the Particular Signal
+     * @param signalTrigger The Discrete Signal Trigger for the Rising Edge Pulse Detection
+     * @return The Rising Edge Flag as a Boolean
+     */
+   bool risingEdge(int signalID, bool signalTrigger)
     {   
         bool risingEdgeFlag= false; 
 
         // Check it's a Rising Flag Condition (Previous State: Low | Current State: High)
-        if (!risingEdgePreviousStates[signalID] && trigger == true) // (Low -> High)
+        if (!risingEdgePreviousStates[signalID] && signalTrigger == true) // (Low -> High)
         {   
             risingEdgeFlag = true; 
         }
         // Update Previous State for the Next Method Call
-        risingEdgePreviousStates[signalID] = trigger; 
+        risingEdgePreviousStates[signalID] = signalTrigger; 
 
         return risingEdgeFlag; 
     }
