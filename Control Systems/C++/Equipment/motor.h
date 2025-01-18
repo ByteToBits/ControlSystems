@@ -55,13 +55,23 @@ class Motor
       bool runStatus; 
       bool tripStatus; 
       bool selectorMode; 
+      bool interlockStatus; 
+      bool eStopStatus; 
 
       ScadaMotor scadaMotor; // Interface 
 
    private: 
+      
+      bool _FailToStopAlarm; 
+      bool _FailToStartAlarm; 
+      bool _FaultAlarm; 
+      short _FaultState; 
+
       bool failToStartCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
       bool failToStopCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
       float scaleSpeedInput(float rawAnalogInput, float rawAnalogInputMin, float rawAnalogInputMax, float engineeringUnitMin, float engineeringUnitMax); 
+      std::tuple<bool, int> faultWatcher(bool trip, bool eStop, bool failToStart, bool failToStop); 
+
 };
 
 #endif

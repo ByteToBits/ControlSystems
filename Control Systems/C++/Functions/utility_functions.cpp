@@ -1,12 +1,17 @@
 
 #include "utility_functions.h"
 #include <tuple>
+#include <map>
 
 // A namespace in C++ is essentially a way to group related functions, classes, variables, or objects together under a single name
 // This organizes codes and prevents conflicts 
 
 namespace UitlityFunctions 
-{
+{   
+    //  Rising Edge: For Tracking the States of the Pulse Detection
+    static std::map<int, bool> risingEdgePreviousStates; // Tracks Previous Signal State
+    static std::map<int, bool> risingEdgePulseStates;   // Tracks Pulse States
+
     /**
      * @brief Triggers an Activation of an Alarm after the Trigger Condition remain True for a user-defined period of time.
      * @param enable Enable this particular Alarm (True = Alarm Enabled | False = Alarm Disabled)
@@ -48,5 +53,16 @@ namespace UitlityFunctions
         }
 
         return std::make_tuple(activeAlarm, elapsedTime); 
+    }
+
+    bool risingEdge(int signalID, bool &trigger)
+    {
+        // Check it's a Rising Flag Condition (Previous State: Low | Current State: High)
+        if (!risingEdgePreviousStates[signalID] && trigger == true)
+        {
+            risingEdgePulseStates[signalID] = true;
+        }
+
+        
     }
 }
