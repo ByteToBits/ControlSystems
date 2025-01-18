@@ -39,7 +39,7 @@ namespace UtilityFunctions
 
     bool alarmDelayCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
 
-    bool risingEdge(int signalID, bool &trigger); 
+    bool risingEdge(int signalID, bool signalTrigger); 
 }
 
 #endif
