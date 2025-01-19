@@ -14,8 +14,8 @@
 namespace UtilityFunctions 
 {   
     namespace { // Anonymous Namespace
-        //  Rising Edge: For Tracking the States of the Pulse Detection
-        std::map<int, bool> risingEdgePreviousStates;   // Tracks Pulse States
+        //  Rising and Falling Edge: For Tracking the States of the Pulse Detection
+        std::map<int, bool> previousSignalState;   // Tracks Pulse States
     }
 
     /**
@@ -62,23 +62,43 @@ namespace UtilityFunctions
     }
 
     /**
-     * @brief Detects a Rising Edge Signal and Returns a Bool during the Rising Edge Stae
+     * @brief Detects a Rising Edge Signal and Returns a Bool during the Rising Edge State
      * @param signalID A Unique Tracking ID for the Particular Signal
      * @param signalTrigger The Discrete Signal Trigger for the Rising Edge Pulse Detection
      * @return The Rising Edge Flag as a Boolean
      */
    bool risingEdge(int signalID, bool signalTrigger)
     {   
-        bool risingEdgeFlag= false; 
+        bool risingEdgeFlag = false; 
 
         // Check it's a Rising Flag Condition (Previous State: Low | Current State: High)
-        if (!risingEdgePreviousStates[signalID] && signalTrigger == true) // (Low -> High)
+        if (!previousSignalState[signalID] && signalTrigger == true) // (Low -> High)
         {   
             risingEdgeFlag = true; 
         }
         // Update Previous State for the Next Method Call
-        risingEdgePreviousStates[signalID] = signalTrigger; 
+        previousSignalState[signalID] = signalTrigger; 
 
         return risingEdgeFlag; 
     }
+
+    /**
+     * @brief Detects teh Falling Edge of a Signal and Returns a Bool during the Rising Edge State
+     * @param signalID A Unique Tracking ID for the Particular Signal
+     * @param signalTrigger The Discrete Signal Trigger for the Rising Edge Pulse Detection
+     * @return The Falling Edge Flag as a Boolean
+     */
+    bool fallingEdge(int signalID, bool signalTrigger)
+    {
+        bool fallingEdgeFlag = false; 
+        if (previousSignalState[signalID] && signalTrigger == false)
+        {
+            fallingEdgeFlag = true; 
+        }
+        // Update Previous State for the Next Method Call
+        previousSignalState[signalID] = signalTrigger; 
+
+        return fallingEdgeFlag; 
+    }
+
 }

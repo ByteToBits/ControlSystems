@@ -40,6 +40,7 @@ namespace UtilityFunctions
     std::tuple<bool, unsigned int> alarmDelayCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
 
     bool risingEdge(int signalID, bool signalTrigger); 
+    bool fallingEdge(int signalID, bool signalTrigger);
 }
 
 #endif
