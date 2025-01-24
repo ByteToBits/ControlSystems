@@ -101,4 +101,16 @@ namespace UtilityFunctions
         return fallingEdgeFlag; 
     }
 
+    /**
+     * @brief Starts a Time Counter when the Input is True
+     * @param signalTrigger The Boolean Flag that will activate the Timer
+     * @param timerLimit The maximum time limit the Counter Function can count up to
+     * @param resetTimer resets the Time Counter to 0 
+     * @return Counter Time Limit Reach (Boolean) | Time Elapsed in Seconds | Time Elapsed in Milliseconds
+     */
+    std::tuple<bool, unsigned int, unsigned int> counterOn(bool signalTigger, unsigned int timeLimit, bool resetTimer)
+    {
+        
+    }
+
 }

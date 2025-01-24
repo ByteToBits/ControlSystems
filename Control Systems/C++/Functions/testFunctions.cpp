@@ -1,6 +1,8 @@
 #include <iostream>
 #include "utilityFunctions.h"
 
+// .\testFunctions.exe
+
 int main() 
 {
     bool trigger = false; 
