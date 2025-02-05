@@ -74,7 +74,7 @@ except Exception as e:
   print("Error: Mapping Data Types - ", e)
   traceback.print_exc()     
 
-print(dataFiles)
+# print(dataFiles)
 
 # Process 4: Data Cleaning - Remove any Variables with "Unknown" or Missing Primitive Data Type
 dataCleaning = True; 
@@ -92,7 +92,7 @@ print("\nExecute: Data Filter (Flag = " + str(dataFilter) + ")")
 filterFiles = dataProcessor.getStructType(dataFiles) # Get the Structure Type which Corresponds to the Filter File Name
 print(filterFiles)
 dataFiles = dataProcessor.filterVariables(True, dataFiles, filterFiles, filterDirectory) 
-dataParser.printFormater(dataFiles, False)
+dataParser.printFormater(dataFiles, True)
 
 
 # Process 6: Construct String Data for CSV File
