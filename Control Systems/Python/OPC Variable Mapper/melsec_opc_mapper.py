@@ -67,7 +67,7 @@ except Exception as e:
 try: 
   for i in range(len(dataFiles)):
     dataFiles[i] = dataParser.mapVariableTypes(dataFiles[i], dataStructure)
-    dataParser.printFormater(dataFiles[i], False)
+    dataParser.printFormater(dataFiles[i], True)
   print("\nSuccess: Data Wrangling Sucess")
 
 except Exception as e: 
@@ -95,13 +95,13 @@ dataParser.printFormater(dataFiles, False)
 
 # Process 6: Construct String Data for CSV File
 print("\nExecute: Data Formatting\n")
-contentList, fileName = dataProcessor.formatStringData(dataFile, scanRateSetting, headerString, trailerPacket)
+contentList, fileName = dataProcessor.formatStringData(dataFiles[0], scanRateSetting, headerString, trailerPacket)
 dataParser.printFormater(contentList, False)
 
 
 # Process 7: Write Data to CSV
 try: 
-  dataWriter.writeDataToCSV(outputDataDirectory, dataFile, contentList)
+  dataWriter.writeDataToCSV(outputDataDirectory, dataFiles[0], contentList)
 except Exception as e: 
   print("Error: Writing Data to Destination - ", e)
   traceback.print_exc() 
