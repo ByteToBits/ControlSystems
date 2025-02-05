@@ -13,9 +13,9 @@ Yes,Ctrl_Select_Seq_Matrix,INT
 Yes,Ctrl_Rotate_Day,INT
 Yes,Ctrl_Rotate_Hour,INT
 Yes,Ctrl_Rotate_Min,INT
-Yes,Ctrl_Stabilization_Delay,INT
-Yes,Ctrl_StageUp_Delay,WORD
-Yes,Ctrl_StageDown_Delay,WORD
+,Ctrl_Stabilization_Delay,INT
+,Ctrl_StageUp_Delay,WORD
+,Ctrl_StageDown_Delay,WORD
 Yes,FB_Cur_Seq_Matrix_Index,INT
 Yes,FB_Next_Seq_Matrix_Index,INT
 Yes,FB_Rotation_In_Progress,BOOL
@@ -26,7 +26,7 @@ Yes,FB_Rotation_In_Progress,BOOL
 ,FB_Current_Priority_Buffer,ARRAY [1..8] OF INT
 Yes,FB_NumOf_AutoRun_Motors,INT
 Yes,FB_NumOf_Ready_Motors,INT
-Yes,FB_Stabilization_Counter,INT
+,FB_Stabilization_Counter,INT
 Yes,FB_State,INT
-Yes,FB_StageUp_Delay_Counter,WORD
-Yes,FB_StageDown_Delay_Counter,WORD
+,FB_StageUp_Delay_Counter,WORD
+,FB_StageDown_Delay_Counter,WORD
