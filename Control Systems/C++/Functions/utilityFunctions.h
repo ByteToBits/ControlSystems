@@ -41,6 +41,8 @@ namespace UtilityFunctions
 
     bool risingEdge(int signalID, bool signalTrigger); 
     bool fallingEdge(int signalID, bool signalTrigger);
+
+    std::tuple<bool, unsigned int, unsigned int> counterOnTimer(bool signalTrigger, unsigned timerLimit, bool resetTimer);
 }
 
 #endif

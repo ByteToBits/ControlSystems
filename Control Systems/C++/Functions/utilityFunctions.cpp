@@ -16,6 +16,7 @@ namespace UtilityFunctions
     namespace { // Anonymous Namespace
         //  Rising and Falling Edge: For Tracking the States of the Pulse Detection
         std::map<int, bool> previousSignalState;   // Tracks Pulse States
+        std::map<int, long long> countOnTimerStartTime; // For "countOnTimer()" Functions
     }
 
     /**
@@ -108,9 +109,9 @@ namespace UtilityFunctions
      * @param resetTimer resets the Time Counter to 0 
      * @return Counter Time Limit Reach (Boolean) | Time Elapsed in Seconds | Time Elapsed in Milliseconds
      */
-    std::tuple<bool, unsigned int, unsigned int> counterOn(bool signalTigger, unsigned int timeLimit, bool resetTimer)
+    std::tuple<bool, unsigned int, unsigned int> counterOnTimer(bool signalTigger, unsigned int timeLimit, bool resetTimer)
     {
-        
+        // Need Unique Identifier?? 
     }
 
 }
