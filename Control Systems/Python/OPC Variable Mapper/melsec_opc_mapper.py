@@ -10,7 +10,7 @@ controllerType = "FX5" # iQR
 rawDataDirectory= r"Control Systems\Python\OPC Variable Mapper\Data\Raw Data"
 dataStructureDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Data Structures\\" + controllerType
 outputDataDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Output"
-filterDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Filter\\" + controllerType
+filterDirectory = os.path.join("Control Systems", "Python", "OPC Variable Mapper", "Data", "Filter", controllerType)
 
 scanRateSetting = 1000; 
 headerString = ("Tag Name,Address,Data Type,Respect Data Type,Client Access,Scan Rate,Scaling,Raw Low,Raw High,"
@@ -67,13 +67,14 @@ except Exception as e:
 try: 
   for i in range(len(dataFiles)):
     dataFiles[i] = dataParser.mapVariableTypes(dataFiles[i], dataStructure)
-    dataParser.printFormater(dataFiles[i], True)
+    dataParser.printFormater(dataFiles[i], False)
   print("\nSuccess: Data Wrangling Sucess")
 
 except Exception as e: 
   print("Error: Mapping Data Types - ", e)
   traceback.print_exc()     
 
+print(dataFiles)
 
 # Process 4: Data Cleaning - Remove any Variables with "Unknown" or Missing Primitive Data Type
 dataCleaning = True; 
@@ -89,6 +90,7 @@ if dataCleaning:
 dataFilter = True; 
 print("\nExecute: Data Filter (Flag = " + str(dataFilter) + ")")
 filterFiles = dataProcessor.getStructType(dataFiles) # Get the Structure Type which Corresponds to the Filter File Name
+print(filterFiles)
 dataFiles = dataProcessor.filterVariables(True, dataFiles, filterFiles, filterDirectory) 
 dataParser.printFormater(dataFiles, False)
 

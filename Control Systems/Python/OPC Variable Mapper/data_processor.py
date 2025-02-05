@@ -83,47 +83,35 @@ def getStructType(dataFiles):
 
 def filterVariables(enable, dataFiles, filterFiles, filterDirectory):
 
-    filterDataFiles = []
+  filterDataFiles = []
 
-    if enable:
-        for filterFile in filterFiles:
-            if filterFile != 'Primitive':
-                try:
-                    filterFilePath = filterDirectory + "\\" + str(filterFile) + ".csv"
-                    popValues = set()  # Use a set for faster lookups
-                    tempArray = readCSV(filterFilePath)
+  if (enable): 
+    for filterFile in filterFiles: 
+      if filterFile != 'Primitive': 
 
-                    for i in range(2, len(tempArray)):  # Start from the 3rd row
-                        if tempArray[i][0].strip().lower() != "yes":  # Trim whitespace and check case
-                            popValues.add(tempArray[i][1].strip())  # Trim and store in a set
+        try: 
+          filterFilePath = filterDirectory + "\\" + str(filterFile) + ".csv"
+          # print(filterFilePath)
+          popValues = []
+          tempArray = readCSV(filterFilePath)
 
-                    # Create a deep copy to avoid modifying the original input
-                    filteredDataFiles = []
+          for i in range(2, len(tempArray)): 
+            if tempArray[i][0].lower() != "yes": 
+              popValues.append(tempArray[i][1])
 
-                    for dataFile in dataFiles:
-                        if isinstance(dataFile, dict):
-                            newDataFile = {}  # Store the modified version
-                            for locationGroup, globalVariables in dataFile.items():
-                                newGlobalVariables = {}
-                                for scadaVariable, metadata in globalVariables.items():
-                                    if 'Variables' in metadata:
-                                        # Filter the 'Variables' array
-                                        filteredVariables = [
-                                            var for var in metadata['Variables']
-                                            if var[0].strip() not in popValues
-                                        ]
-                                        newGlobalVariables[scadaVariable] = {
-                                            'Struct': metadata.get('Struct', ''),
-                                            'Variables': filteredVariables
-                                        }
-                                    else:
-                                        newGlobalVariables[scadaVariable] = metadata
-                                newDataFile[locationGroup] = newGlobalVariables
-                            filteredDataFiles.append(newDataFile)
+          # Filter Child Variables based on the Filter CSV Files
+          for dataFile in dataFiles:
+              if isinstance(dataFile, dict):
+                  for locationGroup, globalVariables in dataFile.items():
+                      for scadaVariable, metadata in globalVariables.items():
+                          # Filter the 'Variables' array
+                          metadata['Variables'] = [
+                              var for var in metadata.get('Variables', []) 
+                              if var[0] not in popValues ]
+          
+          filterDataFiles = dataFiles
 
-                    return filteredDataFiles  # Return modified data
-
-                except Exception as e:
-                    print(f"Failed to Filter Data for {filterFilePath} | Exception: {str(e)}")
-
-    return dataFiles  # Return original if no filtering is done
+        except Exception as e: 
+          print("Failed to Filter Data for " + str(filterFilePath) + " | Exception" + e)
+  
+  return filterDataFiles
