@@ -153,7 +153,8 @@ def filterVariables(enable, dataFiles, filterFiles, filterDirectory):
                             
                             for var in variables:
                                 varName = var[0]
-                                # Hardcode to always keep FB_Process_Value
+                                # If "Process Value" Tag does not map, Hardcode it to always keep FB_Process_Value
+                                # if varName == "FB_Process_Value" or varName == "Ctrl_Mode" or varName in keepValues:
                                 if varName == "FB_Process_Value" or varName == "Ctrl_Mode" or varName in keepValues:
                                     filteredVariables.append(var)
                                 # Remove only those explicitly marked for removal
