@@ -90,9 +90,9 @@ if dataCleaning:
 dataFilter = True; 
 print("\nExecute: Data Filter (Flag = " + str(dataFilter) + ")")
 filterFiles = dataProcessor.getStructType(dataFiles) # Get the Structure Type which Corresponds to the Filter File Name
-print(filterFiles)
+# print(filterFiles)
 dataFiles = dataProcessor.filterVariables(True, dataFiles, filterFiles, filterDirectory) 
-dataParser.printFormater(dataFiles, True)
+dataParser.printFormater(dataFiles, False)
 
 
 # Process 6: Construct String Data for CSV File
