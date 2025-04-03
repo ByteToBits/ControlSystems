@@ -235,7 +235,7 @@ def process_all_meters(meter_list: list, file_lists: list, file_types: list, out
 
 
 # Main execution
-print(f"\nDAT TO TXT CONVERTER - {targetYear}-{targetMonth}-{targetDay}")
+print(f"\nDATA TO TXT CONVERTER - {targetYear}-{targetMonth}-{targetDay}")
 print(f"Input:  {pathDataFolder}")
 print(f"Output: {pathOutputFolder}\n")
 

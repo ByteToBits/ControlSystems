@@ -15,6 +15,7 @@ import pandas as pd
 import numpy as np
 import os
 from typing import List, Tuple
+import datetime
 
 # Function: List Folder Names
 # Fetch All Folder Name of Each BTU Meter matching the given prefixes  and Store it in List 
@@ -232,3 +233,26 @@ def list_Meter_Blocks(nameList):
         blockList.append(blockNumber)
 
     return sorted(list(set(blockList)))
+
+
+def get_datetime_yesterday():
+    """
+        Gets the Time and Date based on the Computer Clock.
+    Args:
+        
+    Returns:
+        date (String): Yesterday Date as a String "01"
+        month (String): Yesterday Month as a String "03"
+        year (String): Yesterday Year as a String "2025"
+    """
+    datetime_String = str(datetime.datetime.now())
+    
+    datetime_Parts = datetime_String.split(" ")
+    datetime_Segments = datetime_Parts[0].split("-")
+
+    year = datetime_Segments[0]
+    month = datetime_Segments[1]
+    date = datetime_Segments[2]
+
+    # Check the String 
+    return date, month, year
