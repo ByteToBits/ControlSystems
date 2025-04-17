@@ -13,13 +13,13 @@ motor1_rated_efficiency = 0.9; # 90%
 pump1_rated_efficiency = 0.8; # 80%
 
 # Chilller System Values
-chwst = 6.7     # Celsius
-chwrt = 12.6    # Celsius
+chwst = 6.7           # Celsius
+chwrt = 12.6          # Celsius
 chwFlowRate = 84.10   # L/s
-cwst = 29.4     # Celsius
-cwrt = 35.5    # Celsius
-cwFlowRate = 97.65   # L/s
-chiller_power = 308 # kW
+cwst = 29.4           # Celsius
+cwrt = 35.5           # Celsius
+cwFlowRate = 97.65    # L/s
+chiller_power = 308   # kW
 
 # Heat Energy Equation 
 def cal_energy_equation(massFlowRate, specificHeatofWater, supplyTemp, returnTemp):   
@@ -61,5 +61,6 @@ percentHeatBalance = cal_percent_heat_balance(qHeatGainRT, qHeatRejectedRT, tota
 # Answer: Heat Gain: 591.14 RT | Heat Rejected: 709
 print("\nFormula Below Does Not Hydraulic Lossess")
 print("Motor 1 Hydraulic Losses: "+ str(round(motorHydraulicLosses,2)) + " kW\n")
-print("Heat Gain: " + str(round(qHeatGainRT,2)) + " RT and Heat Rejected: " + str(round(qHeatRejectedRT,2)) + " RT")
+print("Heat Gain: " + str(round(qHeatGainRT,2)) + " RT")
+print("Heat Rejected: " + str(round(qHeatRejectedRT,2)) + " RT")
 print("Percent Heat Balance: "+ str(round(percentHeatBalance,2)) + " %\n")
