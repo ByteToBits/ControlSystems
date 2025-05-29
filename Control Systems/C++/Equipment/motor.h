@@ -51,21 +51,17 @@ struct ScadaMotor
 class Motor 
 {
    public:
-
-      bool runStatus; 
-      bool tripStatus; 
-      bool selectorMode; 
-      bool interlockStatus; 
-      bool eStopStatus; 
-
-      ScadaMotor scadaMotor; // Interface 
-
-   private: 
+      bool getRunStatus() const { return _runStatus; }
+      bool getTripStatus() const { return _tripStatus; }
       
-      bool _FailToStopAlarm; 
-      bool _FailToStartAlarm; 
-      bool _FaultAlarm; 
-      short _FaultState; 
+      ScadaMotor scadaMotor; 
+
+   private:
+      bool _runStatus; 
+      bool _tripStatus; 
+      bool _selectorMode; 
+      bool _interlockStatus; 
+      bool _eStopStatus;
 
       bool failToStartCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
       bool failToStopCounter(bool enable, bool trigger, unsigned int alarmTriggerDelay);
