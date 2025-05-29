@@ -1,8 +1,20 @@
+/*
+Function Block: Motor - Electrically Commutated (EC) Fan (Modified VSD Function Block) 
+Program Version: v1.01  (20-April-2024 ) 
+Controller: Mitsubishi iQ-R (Process | Redundant) 
+	
+Company: Engie South East Asia
+Programmer: Tristan Sim 
+	
+Description: Function Block to Control & Monitoring Variable Speed Drive Motor 
+Remarks: For some Reason, DeviceXPlorer OPC Can't Write to Boolean
+*/
+
 #include "motor.h"
 #include <iostream>
 #include <chrono>
 
-// Static member definitions
+// Static member definitions (moved from header to avoid linker errors)
 int Motor::_risingEdgeID_Command = 1000;
 int Motor::_fallingEdgeID_Command = 1001;  
 int Motor::_fallingEdgeID_RunStatus = 1002;
@@ -45,7 +57,7 @@ Motor::Motor(int assignedPriority):
 void Motor::execute(bool MA_Status, bool Run_Status, bool Trip_Status, bool Interlock, bool Auto_Command, bool Sec_Pulse)
 {
     // Initialize setpoints on first scan or when requested
-    if (_First_Scan || SCADA.Ctrl_Initialize) {
+    if (_First_Scan || (SCADA.Ctrl_Initialize >= 1)) {
         initializeSetpoints();
         _First_Scan = false;
     }
@@ -72,6 +84,7 @@ void Motor::execute(bool MA_Status, bool Run_Status, bool Trip_Status, bool Inte
 
 void Motor::initializeSetpoints()
 {
+    // Initialize SCADA Setpoint Variables
     // Fail to Start/Stop Timer Setpoint - In Seconds
     SCADA.Ctrl_Fail_to_Start_SP = 120;
     SCADA.Ctrl_Fail_to_Stop_SP = 120;
@@ -88,19 +101,20 @@ void Motor::initializeSetpoints()
     SCADA.Ctrl_SC_EU_Max = 100.0;       // 100% Speed
     SCADA.Ctrl_SC_EU_Min = 0.0;         // 0% Speed
     
-    SCADA.Ctrl_Initialize = false;
+    SCADA.Ctrl_Initialize = 0;
     
     SCADA.Ctrl_MinSpeed = 40.0;         // Minimum Allowable Speed of EC Fan in %
     SCADA.Ctrl_MaxSpeed = 100.0;        // Maximum Allowable Speed of EC Fan in %
     
     // Due to DeviceXPlorer Not able to Read/Write to a Data Register Boolean
     SCADA.Ctrl_Reset = 0;
+    SCADA.Ctrl_Manual_Override = 0;
 }
 
 void Motor::handleInputMapping(bool MA_Status, bool Run_Status, bool Trip_Status, bool Interlock)
 {
     // Function Block Input Mapping: Digital Input
-    if (SCADA.Ctrl_Simulate_Mode) {  // Simulate the Digital Input Values
+    if (SCADA.Ctrl_Simulate_Mode >= 1) {  // Simulate the Digital Input Values
         _MA_Status = (SCADA.Ctrl_Simulate_MA_Mode != 0);
         _Run_Status = (SCADA.Ctrl_Simulate_Run_Status != 0);
         _Trip_Status = (SCADA.Ctrl_Simulate_Trip != 0);
@@ -124,14 +138,21 @@ void Motor::handleInputMapping(bool MA_Status, bool Run_Status, bool Trip_Status
     }
     
     // Function Block Input Mapping: Interlocks & Permissive
-    if (SCADA.Ctrl_Bypass_Interlock) { // Interlock
+    if (SCADA.Ctrl_Bypass_Interlock >= 1) { // Interlock
         _Interlock = true;
     } else {
         _Interlock = Interlock;
     }
     
-    // SCADA Mapping: Clamp into Binary Range the Control Reset (Due to DeviceXPlorer Not able to Read/Write to a Data Register Boolean)
+    // SCADA Mapping: Write Local Variables to SCADA Data Structure
+    SCADA.FB_MA_Status = _MA_Status;
+    SCADA.FB_Run_Status = _Run_Status;
+    SCADA.FB_Interlock = _Interlock;
+    
+    // SCADA Mapping: Clamp into Binary Range the Control Reset and Override Speed Control INT
+    // Due to DeviceXPlorer Not able to Read/Write to a Data Register Boolean
     SCADA.Ctrl_Reset = limitInt(SCADA.Ctrl_Reset, 0, 1);
+    SCADA.Ctrl_Manual_Override = limitInt(SCADA.Ctrl_Manual_Override, 0, 1);
 }
 
 void Motor::handleAlarmLogic()
@@ -173,11 +194,15 @@ void Motor::handleAlarmLogic()
         _Fail_to_Stop = false;
         
         SCADA.Ctrl_Reset = 0;
+        // Due to DeviceXPlorer Not able to Read/Write to a Data Register Boolean
+        SCADA.Ctrl_Reset = 0;
         
         if (SCADA.Ctrl_Mode == 1) {
             SCADA.Ctrl_Mode = 0;
         }
     } else {
+        SCADA.Ctrl_Reset = 0;
+        // Due to DeviceXPlorer Not able to Read/Write to a Data Register Boolean
         SCADA.Ctrl_Reset = 0;
     }
 }
@@ -189,6 +214,7 @@ void Motor::handlePermissiveLogic()
         _Permissive = false;
         _Available = false;
         _Priority = _Fault_Code;
+        _Available = false;
     }
     else if (_Mode == 3) { // State: Maintenance
         _State = 3;
@@ -196,6 +222,7 @@ void Motor::handlePermissiveLogic()
         _Available = false;
         _Command = 0;
         _Priority = _Fault_Code;
+        _Available = false;
     }
     else {
         if (!_Fault_Alarm && _MA_Status) { // If Motor is Healthy and Selector Switch in Auto Mode
@@ -309,6 +336,7 @@ void Motor::handleRunHourTotalizer(bool Sec_Pulse)
             _Sec_Counter = 0;
         }
         
+        // FIXED: This should check _Run_Minutes, not _Sec_Counter (which was just reset to 0)
         if (_Run_Minutes >= 60) { // Total Running Hour
             SCADA.FB_Run_Hours = SCADA.FB_Run_Hours + 1;
             _Run_Minutes = 0;
@@ -327,9 +355,6 @@ void Motor::updateScadaMapping()
     SCADA.FB_Fail_to_Stop = _Fail_to_Stop;
     SCADA.FB_Start_Time = _Motor_Start_Counter;
     SCADA.FB_Stop_Time = _Motor_Stop_Counter;
-    SCADA.FB_MA_Status = _MA_Status;
-    SCADA.FB_Run_Status = _Run_Status;
-    SCADA.FB_Interlock = _Interlock;
 }
 
 void Motor::updateOutputMapping()
