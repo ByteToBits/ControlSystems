@@ -10,7 +10,7 @@ Description: Function Block to Control & Monitoring Variable Speed Drive Motor
 Remarks: For some Reason, DeviceXPlorer OPC Can't Write to Boolean
 */
 
-#include "motor.h"
+#include "Motor.h"
 #include <iostream>
 #include <chrono>
 

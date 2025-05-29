@@ -7,7 +7,7 @@
 #ifndef VSD_MOTOR_H
 #define VSD_MOTOR_H
 
-#include "motor.h"
+#include "Motor.h"
 
 // Extended SCADA structure for VSD functionality
 struct ScadaVSDMotor : public ScadaMotor {
