@@ -4,8 +4,8 @@
 // Date: 30th December 2024
 // Version: 1.02
 
-#ifndef VSD_MOTOR_H
-#define VSD_MOTOR_H
+#ifndef MOTORVSD_H
+#define MOTORVSD_H
 
 #include "Motor.h"
 
