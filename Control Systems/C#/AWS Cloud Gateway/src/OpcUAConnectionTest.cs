@@ -25,6 +25,21 @@ class Program
         // Specify the full path to your config.json file
         var configPath = @"C:\Repository\ControlSystems\Control Systems\C#\AWS Cloud Gateway\config\configOPC.json";
         
+        // PLC Filter - specify which PLCs to read (leave empty for all PLCs)
+        var plcFilter = new List<string>
+        {
+            "PLC-22-1A",
+            "PLC-22-1B"
+            // "DYS-PLC-CH",
+            // "PLC-22-2A",
+            // "PLC-22-2B",
+            // "SYSTEM"
+        };
+        // Set to empty list to read ALL PLCs: var plcFilter = new List<string>();
+        
+        // Batch Size Control
+        var batchSize = 100; // Set to 0 for auto-detection, or specify manual size (50, 100, 200, etc.)
+        
         // Load configuration from JSON file
         var config = LoadConfiguration(configPath);
         
@@ -155,14 +170,22 @@ class Program
             Console.WriteLine("\nBrowsing server nodes and PLC tags...");
             var browser = new Browser(session);
             
-            // First, collect all variable nodes
+            // First, collect all variable nodes with PLC filtering
             var allVariables = new List<(ReferenceDescription reference, int depth)>();
-            CollectVariablesRecursively(browser, ObjectIds.ObjectsFolder, 0, 3, allVariables);
+            CollectVariablesRecursively(browser, ObjectIds.ObjectsFolder, 0, 3, allVariables, plcFilter);
             
             Console.WriteLine($"\nFound {allVariables.Count} variables. Reading values in batches...");
             
             // Read all variables in batches for better performance
-            ReadVariablesInBatches(session, allVariables, 50); // Read 50 at a time
+            // Use manual batch size or auto-detect optimal size
+            var finalBatchSize = batchSize > 0 ? batchSize : DetectOptimalBatchSize(session, allVariables);
+            
+            if (batchSize > 0)
+            {
+                Console.WriteLine($"Using manual batch size: {finalBatchSize}");
+            }
+            
+            ReadVariablesInBatches(session, allVariables, finalBatchSize);
             
             // Clean up
             session.Close();
@@ -192,7 +215,7 @@ class Program
         Console.ReadKey();
     }
     
-    static void CollectVariablesRecursively(Browser browser, NodeId nodeId, int depth, int maxDepth, List<(ReferenceDescription reference, int depth)> variables)
+    static void CollectVariablesRecursively(Browser browser, NodeId nodeId, int depth, int maxDepth, List<(ReferenceDescription reference, int depth)> variables, List<string> plcFilter = null)
     {
         if (depth > maxDepth) return;
         
@@ -208,6 +231,20 @@ class Program
                     continue;
                 }
                 
+                // Apply PLC filter at the top level (depth 0)
+                if (depth == 0 && plcFilter != null && plcFilter.Count > 0)
+                {
+                    if (!plcFilter.Contains(reference.DisplayName.Text))
+                    {
+                        Console.WriteLine($"Skipping PLC: {reference.DisplayName.Text} (not in filter)");
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Processing PLC: {reference.DisplayName.Text}");
+                    }
+                }
+                
                 if (reference.NodeClass == NodeClass.Variable)
                 {
                     variables.Add((reference, depth));
@@ -217,7 +254,7 @@ class Program
                 if (reference.NodeClass == NodeClass.Object)
                 {
                     var childNodeId = ExpandedNodeId.ToNodeId(reference.NodeId, browser.Session.NamespaceUris);
-                    CollectVariablesRecursively(browser, childNodeId, depth + 1, maxDepth, variables);
+                    CollectVariablesRecursively(browser, childNodeId, depth + 1, maxDepth, variables, plcFilter);
                 }
             }
         }
@@ -225,6 +262,70 @@ class Program
         {
             Console.WriteLine($"Error browsing node {nodeId}: {ex.Message}");
         }
+    }
+    
+    static int DetectOptimalBatchSize(Session session, List<(ReferenceDescription reference, int depth)> variables)
+    {
+        if (variables.Count == 0) return 50;
+        
+        // Try different batch sizes to find the optimal one
+        var testSizes = new int[] { 50, 100, 200, 500, 1000 };
+        var bestBatchSize = 50;
+        var bestTime = double.MaxValue;
+        
+        Console.WriteLine("Testing optimal batch size...");
+        
+        foreach (var testSize in testSizes)
+        {
+            if (testSize > variables.Count) continue;
+            
+            try
+            {
+                var testBatch = variables.Take(Math.Min(testSize, variables.Count)).ToList();
+                var readValueIds = new ReadValueIdCollection();
+                
+                foreach (var (reference, depth) in testBatch)
+                {
+                    try
+                    {
+                        var nodeId = ExpandedNodeId.ToNodeId(reference.NodeId, session.NamespaceUris);
+                        readValueIds.Add(new ReadValueId
+                        {
+                            NodeId = nodeId,
+                            AttributeId = Attributes.Value
+                        });
+                    }
+                    catch { }
+                }
+                
+                if (readValueIds.Count == 0) continue;
+                
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                
+                DataValueCollection results;
+                DiagnosticInfoCollection diagnosticInfos;
+                session.Read(null, 0, TimestampsToReturn.Server, readValueIds, out results, out diagnosticInfos);
+                
+                stopwatch.Stop();
+                var timePerTag = (double)stopwatch.ElapsedMilliseconds / readValueIds.Count;
+                
+                Console.WriteLine($"Batch size {testSize}: {stopwatch.ElapsedMilliseconds}ms ({timePerTag:F2}ms per tag)");
+                
+                if (timePerTag < bestTime)
+                {
+                    bestTime = timePerTag;
+                    bestBatchSize = testSize;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Batch size {testSize}: FAILED - {ex.Message}");
+                break; // If this size fails, larger sizes will likely fail too
+            }
+        }
+        
+        Console.WriteLine($"Optimal batch size: {bestBatchSize} ({bestTime:F2}ms per tag)\n");
+        return bestBatchSize;
     }
     
     static void ReadVariablesInBatches(Session session, List<(ReferenceDescription reference, int depth)> variables, int batchSize)
