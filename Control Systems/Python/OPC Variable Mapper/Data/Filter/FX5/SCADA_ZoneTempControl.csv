@@ -1,7 +1,0 @@
-DDC-22-1B (Y2025-M06-D01),,,,,,,,,,,,,,,,,,,,,,,,,,
-Class,Label Name,Data Type,Constant,Initial Value,Assign (Device/Label),Address,Comment,Comment 2,Comment 3,Comment 4,Comment 5,Japanese/???,English,Chinese Simplified/????,Korean/???,Chinese Traditional/????,German/Deutsch,Italian/Italiano,Reserved1,Reserved2,Reserved3,Reserved4,Remark,System Label Relation,System Label Name,Attribute
-Yes,FB_Caclulated_Setpoint,REAL,,,,,,,,,,,Feedback: Calculated setpoint value,,,,,,,,,,,,,
-Yes,FB_Zone_Transmitter_Health,BOOL,,,,,,,,,,,Feedback: Zone transmitter health status (0=Failure | 1=Healthy),,,,,,,,,,,,,
-Yes,FB_Fallback_Mode,BOOL,,,,,,,,,,,Feedback: Fallback mode status (1=Using fallback sensor),,,,,,,,,,,,,
-Yes,FB_Fallback_Health,BOOL,,,,,,,,,,,Feedback: Fallback transmitter health status (1=Healthy),,,,,,,,,,,,,
-Yes,Ctrl_Mode,INT,,,,,,,,,,,Control: Control mode selection (0=Primary PV | 1=Average PV | 2=Minimum PV | 3-4=Maximum PV),,,,,,,,,,,,,

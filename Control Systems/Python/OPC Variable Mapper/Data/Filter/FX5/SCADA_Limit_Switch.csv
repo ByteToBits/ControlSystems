@@ -1,6 +1,0 @@
-DDC-22-1B (Y2025-M06-D01),,,,,,,,,,,,,,,,,,,,,,,,,,
-Class,Label Name,Data Type,Constant,Initial Value,Assign (Device/Label),Address,Comment,Comment 2,Comment 3,Comment 4,Comment 5,Japanese/???,English,Chinese Simplified/????,Korean/???,Chinese Traditional/????,German/Deutsch,Italian/Italiano,Reserved1,Reserved2,Reserved3,Reserved4,Remark,System Label Relation,System Label Name,Attribute
-Yes,FB_SwitchTriggered,BOOL,,,,,,,,,,,Switch Triggered Signal,,,,,,,,,,,,,
-,Ctrl_HysteresisDelay,INT,,,,,,,,,,,The Hysteresis Delay between the Actual Signal Trigger & Software Signal,,,,,,,,,,,,,
-Yes,Ctrl_Reset,INT,,,,,,,,,,,Resets Latched Alarm,,,,,,,,,,,,,
-Yes,Ctrl_Latch_Alarm,INT,,,,,,,,,,,"Latches the Alarm when Triggered, Requires Reset to Release Latch",,,,,,,,,,,,,
