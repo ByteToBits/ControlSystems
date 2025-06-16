@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Data files
+Data/
+*.csv
+*.xlsx
+*.xls
+*.json
+*.xml
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project specific
+OPC Variable Mapper/
+data_parser.py
+data_processor.py
+data_writer.py
+
+# Or if you want to ignore everything except specific files:
+# *
+# !*.py
+# !README.md
+# !requirements.txt

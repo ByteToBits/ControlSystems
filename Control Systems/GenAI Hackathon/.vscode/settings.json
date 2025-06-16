@@ -1,0 +1,6 @@
+{
+    "python.linting.pylintArgs": ["--disable=E0401"],
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none"
+    }
+}
