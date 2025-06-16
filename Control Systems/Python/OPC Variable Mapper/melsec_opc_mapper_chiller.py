@@ -9,7 +9,7 @@ controllerType = "iQR" # iQR
 
 rawDataDirectory= r"Control Systems\Python\OPC Variable Mapper\Data\Raw Data"
 dataStructureDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Data Structures\\" + controllerType
-outputDataDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Output"
+outputDataDirectory = r"Control Systems\Python\OPC Variable Mapper\Data\Output\Chiller"
 filterDirectory = os.path.join("Control Systems", "Python", "OPC Variable Mapper", "Data", "Filter", controllerType)
 
 scanRateSetting = 1000; 
@@ -49,7 +49,7 @@ try:
   print("Total Number of Raw Data File: " + str(len(dataFiles)))
 
   for dataFile in dataFiles: 
-    dataParser.printFormater(dataFile, True)
+    dataParser.printFormater(dataFile, False)
     for globalVar, rawDataContents in dataFile.items(): 
       print("File: " + globalVar + ".xml")
       print("Structure Variables:")
@@ -82,7 +82,7 @@ print("\nExecute: Data Cleaning (Flag = " + str(dataCleaning) + ")")
 if dataCleaning: 
   for dataFile in dataFiles: 
     print("Pre-Filter Data for 'Unknown' or Missing Primitive Data Type:")
-    dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, True)
+    dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
     print("Post-Filter Data for 'Unknown' or Missing Primitive Data Type:")
     dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
 
