@@ -1,22 +1,22 @@
-DYS-PIO-FCU (Y2025-M01-D08),,
-Class,Label Name,Data Type
-,FB_Master_Enable,BOOL
-,FB_Instrument_Health,BOOL
-,FB_Process_Value,REAL
-,Ctrl_Initialize,BOOL
-,Ctrl_Cascade_Setpoint,BOOL
-,Ctrl_Inverse_Acting,BOOL
-,Ctrl_Auto_Enabled,BOOL
-,Ctrl_Hold_Last_CO,BOOL
-Yes,Ctrl_Control_Output,REAL
-Yes,Ctrl_Setpoint,REAL
-,Ctrl_K_Proportional,REAL
-,Ctrl_K_Integral,REAL
-,Ctrl_K_Derivative,REAL
-,Ctrl_Time_Step,INT
-,Ctrl_PV_EU_Max,REAL
-,Ctrl_PV_EU_Min,REAL
-,Ctrl_CO_EU_Max,REAL
-,Ctrl_CO_EU_Min,REAL
-,Ctrl_CO_Limit_Max,INT
-,Ctrl_CO_Limit_Min,INT
+DDC-22-1B (Y2025-M06-D01),,,,,,,,,,,,,,,,,,,,,,,,,,
+Class,Label Name,Data Type,Constant,Initial Value,Assign (Device/Label),Address,Comment,Comment 2,Comment 3,Comment 4,Comment 5,Japanese/???,English,Chinese Simplified/????,Korean/???,Chinese Traditional/????,German/Deutsch,Italian/Italiano,Reserved1,Reserved2,Reserved3,Reserved4,Remark,System Label Relation,System Label Name,Attribute
+,FB_Master_Enable,BOOL,,,,,,,,,,,Feedback: Master enable status (1=Enabled),,,,,,,,,,,,,
+,FB_Instrument_Health,BOOL,,,,,,,,,,,Feedback: Instrument health status (1=Healthy),,,,,,,,,,,,,
+,FB_Process_Value,REAL,,,,,,,,,,,Feedback: Current process variable input value,,,,,,,,,,,,,
+,Ctrl_Initialize,INT,,,,,,,,,,,Control: Initialize/reset controller,,,,,,,,,,,,,
+,Ctrl_Cascade_Setpoint,INT,,,,,,,,,,,Control: Enable cascade control mode (1=Enabled),,,,,,,,,,,,,
+,Ctrl_Inverse_Acting,INT,,,,,,,,,,,Control: Control action direction (1=Inverse | 0=Direct),,,,,,,,,,,,,
+,Ctrl_Auto_Enabled,INT,,,,,,,,,,,Control: Auto mode enable (1=Auto | 0=Manual),,,,,,,,,,,,,
+,Ctrl_Hold_Last_CO,INT,,,,,,,,,,,Control: Hold last control output (1=Hold active),,,,,,,,,,,,,
+Yes,Ctrl_Control_Output,REAL,,,,,,,,,,,Control: Current control output value,,,,,,,,,,,,,
+Yes,Ctrl_Setpoint,REAL,,,,,,,,,,,Control: Target setpoint value,,,,,,,,,,,,,
+,Ctrl_K_Proportional,REAL,,,,,,,,,,,Control: Proportional gain coefficient,,,,,,,,,,,,,
+,Ctrl_K_Integral,REAL,,,,,,,,,,,Control: Integral gain coefficient,,,,,,,,,,,,,
+,Ctrl_K_Derivative,REAL,,,,,,,,,,,Control: Derivative gain coefficient,,,,,,,,,,,,,
+,Ctrl_Time_Step,INT,,,,,,,,,,,Control: Controller execution interval in seconds,,,,,,,,,,,,,
+,Ctrl_PV_EU_Max,REAL,,,,,,,,,,,Control: Process variable upper engineering units limit,,,,,,,,,,,,,
+,Ctrl_PV_EU_Min,REAL,,,,,,,,,,,Control: Process variable lower engineering units limit,,,,,,,,,,,,,
+,Ctrl_CO_EU_Max,REAL,,,,,,,,,,,Control: Control output upper engineering units limit,,,,,,,,,,,,,
+,Ctrl_CO_EU_Min,REAL,,,,,,,,,,,Control: Control output lower engineering units limit,,,,,,,,,,,,,
+,Ctrl_CO_Limit_Max,INT,,,,,,,,,,,Control: Maximum allowed control output limit,,,,,,,,,,,,,
+,Ctrl_CO_Limit_Min,INT,,,,,,,,,,,Control: Minimum allowed control output limit,,,,,,,,,,,,,

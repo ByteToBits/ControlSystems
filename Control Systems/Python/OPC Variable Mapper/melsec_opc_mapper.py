@@ -49,7 +49,7 @@ try:
   print("Total Number of Raw Data File: " + str(len(dataFiles)))
 
   for dataFile in dataFiles: 
-    dataParser.printFormater(dataFile, False)
+    dataParser.printFormater(dataFile, True)
     for globalVar, rawDataContents in dataFile.items(): 
       print("File: " + globalVar + ".xml")
       print("Structure Variables:")
@@ -82,16 +82,15 @@ print("\nExecute: Data Cleaning (Flag = " + str(dataCleaning) + ")")
 if dataCleaning: 
   for dataFile in dataFiles: 
     print("Pre-Filter Data for 'Unknown' or Missing Primitive Data Type:")
-    dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
+    dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, True)
     print("Post-Filter Data for 'Unknown' or Missing Primitive Data Type:")
     dataFile = dataParser.reportUnknownData(dataFile, dataCleaning, False)
 
 # Proces 5: Data Filter - Omit the Unecessary Vairables From the Data File based on the Filter.csv
-dataFilter = True; 
+dataFilter = True;  # Set this to True to enable filtering
 print("\nExecute: Data Filter (Flag = " + str(dataFilter) + ")")
-filterFiles = dataProcessor.getStructType(dataFiles) # Get the Structure Type which Corresponds to the Filter File Name
-# print(filterFiles)
-dataFiles = dataProcessor.filterVariables(True, dataFiles, filterFiles, filterDirectory) 
+filterFiles = dataProcessor.getStructType(dataFiles)
+dataFiles = dataProcessor.filterVariables(dataFilter, dataFiles, filterFiles, filterDirectory)
 dataParser.printFormater(dataFiles, False)
 
 

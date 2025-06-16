@@ -1,34 +1,34 @@
-DYS-PIO-FCU (Y2025-M01-D08),,
-Class,Label Name,Data Type
-Yes,FB_Process_Value,REAL
-,FB_State,INT
-Yes,FB_Health,BOOL
-,FB_Alarm_HH,BOOL
-,FB_Alarm_H,BOOL
-,FB_Alarm_L,BOOL
-,FB_Alarm_LL,BOOL
-,Ctrl_Initialize,BOOL
-,Ctrl_Hold_Last_Value,BOOL
-,Ctrl_Clamp_PV,BOOL
-,Ctrl_Override_Health,BOOL
-,Ctrl_Override_PV,BOOL
-,Ctrl_Alarm_H_Enabled,BOOL
-,Ctrl_Alarm_L_Enabled,BOOL
-,Ctrl_Alarm_HH_Enabled,BOOL
-,Ctrl_Alarm_LL_Enabled,BOOL
-,Ctrl_Override_Process_Value,REAL
-,Ctrl_Offset_PV,REAL
-,Ctrl_Health_Status_Delay,WORD
-,Ctrl_Moving_Avg_SP,WORD
-,Ctrl_AI_EU_Max,REAL
-,Ctrl_AI_EU_Min,REAL
-,Ctrl_AI_RAW_Max,REAL
-,Ctrl_AI_RAW_Min,REAL
-,Ctrl_Alarm_HH_SP,REAL
-,Ctrl_Alarm_HH_Delay,WORD
-,Ctrl_Alarm_H_SP,REAL
-,Ctrl_Alarm_H_Delay,WORD
-,Ctrl_Alarm_L_SP,REAL
-,Ctrl_Alarm_L_Delay,WORD
-,Ctrl_Alarm_LL_SP,REAL
-,Ctrl_Alarm_LL_Delay,WORD
+DDC-22-1B (Y2025-M06-D01),,,,,,,,,,,,,,,,,,,,,,,,,,
+Class,Label Name,Data Type,Constant,Initial Value,Assign (Device/Label),Address,Comment,Comment 2,Comment 3,Comment 4,Comment 5,Japanese/???,English,Chinese Simplified/????,Korean/???,Chinese Traditional/????,German/Deutsch,Italian/Italiano,Reserved1,Reserved2,Reserved3,Reserved4,Remark,System Label Relation,System Label Name,Attribute
+Yes,FB_Process_Value,REAL,,,,,,,,,,,Feedback: Current process variable input value,,,,,,,,,,,,,
+Yes,FB_Alarm_State,INT,,,,,,,,,,,"Feedback: Enumerated alarm state (2=LL, 3=L, 5=Normal, 7=H, 8=HH, 99 = Transmitter Fault)",,,,,,,,,,,,,
+Yes,FB_Health,BOOL,,,,,,,,,,,Feedback: Status indicator of device health (1=healthy),,,,,,,,,,,,,
+,FB_Alarm_HH,BOOL,,,,,,,,,,,Feedback: High-high alarm status (1=active),,,,,,,,,,,,,
+,FB_Alarm_H,BOOL,,,,,,,,,,,Feedback: High alarm status (1=active),,,,,,,,,,,,,
+,FB_Alarm_L,BOOL,,,,,,,,,,,Feedback: Low alarm status (1=active),,,,,,,,,,,,,
+,FB_Alarm_LL,BOOL,,,,,,,,,,,Feedback: Low-low alarm status (1=active),,,,,,,,,,,,,
+,Ctrl_Initialize,INT,,,,,,,,,,,Control: Trigger to initialize/reset the controller,,,,,,,,,,,,,
+,Ctrl_Hold_Last_Value,INT,,,,,,,,,,,Control: Freeze process value at last value (1=hold),,,,,,,,,,,,,
+,Ctrl_Clamp_Process_Value,INT,,,,,,,,,,,Control: Enable clamping of process variable within limits,,,,,,,,,,,,,
+,Ctrl_Override_Health,INT,,,,,,,,,,,Control: Override health status (1=override active),,,,,,,,,,,,,
+,Ctrl_Manual_Override,INT,,,,,,,,,,,Control: Override process variable (1=override active),,,,,,,,,,,,,
+Yes,Ctrl_Alarm_H_Enabled,INT,,,,,,,,,,,Control: Enable high alarm monitoring (1=enabled),,,,,,,,,,,,,
+Yes,Ctrl_Alarm_L_Enabled,INT,,,,,,,,,,,Control: Enable low alarm monitoring (1=enabled),,,,,,,,,,,,,
+,Ctrl_Alarm_HH_Enabled,INT,,,,,,,,,,,Control: Enable high-high alarm monitoring (1=enabled),,,,,,,,,,,,,
+,Ctrl_Alarm_LL_Enabled,INT,,,,,,,,,,,Control: Enable low-low alarm monitoring (1=enabled),,,,,,,,,,,,,
+,Ctrl_Override_Process_Value,REAL,,,,,,,,,,,Control: Value used when process variable is overridden,,,,,,,,,,,,,
+,Ctrl_Offset_Process_Value,REAL,,,,,,,,,,,Control: Offset applied to process variable measurement,,,,,,,,,,,,,
+,Ctrl_Health_Status_Delay,WORD,,,,,,,,,,,Control: Time delay before reporting health status change,,,,,,,,,,,,,
+,Ctrl_Moving_Avg_Setpoint,WORD,,,,,,,,,,,Control: Moving average sample points for smoothing,,,,,,,,,,,,,
+,Ctrl_AI_EU_Max,REAL,,,,,,,,,,,Control: Analog input upper engineering units limit,,,,,,,,,,,,,
+,Ctrl_AI_EU_Min,REAL,,,,,,,,,,,Control: Analog input lower engineering units limit,,,,,,,,,,,,,
+,Ctrl_AI_RAW_Max,REAL,,,,,,,,,,,Control: Analog input upper raw signal limit,,,,,,,,,,,,,
+,Ctrl_AI_RAW_Min,REAL,,,,,,,,,,,Control: Analog input lower raw signal limit,,,,,,,,,,,,,
+,Ctrl_Alarm_HH_SP,REAL,,,,,,,,,,,Control: High-high alarm setpoint,,,,,,,,,,,,,
+,Ctrl_Alarm_HH_Delay,WORD,,,,,,,,,,,Control: High-high alarm time delay in seconds,,,,,,,,,,,,,
+Yes,Ctrl_Alarm_H_SP,REAL,,,,,,,,,,,Control: High alarm setpoint,,,,,,,,,,,,,
+,Ctrl_Alarm_H_Delay,WORD,,,,,,,,,,,Control: High alarm time delay in seconds,,,,,,,,,,,,,
+Yes,Ctrl_Alarm_L_SP,REAL,,,,,,,,,,,Control: Low alarm setpoint,,,,,,,,,,,,,
+,Ctrl_Alarm_L_Delay,WORD,,,,,,,,,,,Control: Low alarm time delay in seconds,,,,,,,,,,,,,
+,Ctrl_Alarm_LL_SP,REAL,,,,,,,,,,,Control: Low-low alarm setpoint,,,,,,,,,,,,,
+,Ctrl_Alarm_LL_Delay,WORD,,,,,,,,,,,Control: Low-low alarm time delay in seconds,,,,,,,,,,,,,

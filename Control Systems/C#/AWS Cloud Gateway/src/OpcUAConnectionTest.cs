@@ -29,11 +29,6 @@ class Program
         var plcFilter = new List<string>
         {
             "PLC-22-1A",
-            "PLC-22-1B"
-            // "DYS-PLC-CH",
-            // "PLC-22-2A",
-            // "PLC-22-2B",
-            // "SYSTEM"
         };
         // Set to empty list to read ALL PLCs: var plcFilter = new List<string>();
         

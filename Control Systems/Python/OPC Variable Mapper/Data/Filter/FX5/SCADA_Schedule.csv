@@ -1,24 +1,26 @@
-DYS-PIO-FCU (Y2025-M01-D08),,
-Class,Label Name,Data Type
-,Ctrl_ScheduleEnabled,BOOL
-,Ctrl_MondayEnabled,BOOL
-,Ctrl_MondayStart,INT
-,Ctrl_MondayStop,INT
-,Ctrl_TuesdayEnabled,BOOL
-,Ctrl_TuesdayStart,INT
-,Ctrl_TuesdayStop,INT
-,Ctrl_WednesdayEnabled,BOOL
-,Ctrl_WednesdayStart,INT
-,Ctrl_WednesdayStop,INT
-,Ctrl_ThursdayEnabled,BOOL
-,Ctrl_ThursdayStart,INT
-,Ctrl_ThursdayStop,INT
-,Ctrl_FridayEnabled,BOOL
-,Ctrl_FridayStart,INT
-,Ctrl_FridayStop,INT
-,Ctrl_SaturdayEnabled,BOOL
-,Ctrl_SaturdayStart,INT
-,Ctrl_SaturdayStop,INT
-,Ctrl_SundayEnabled,BOOL
-,Ctrl_SundayStart,INT
-,Ctrl_SundayStop,INT
+DDC-22-1B (Y2025-M06-D01),,,,,,,,,,,,,,,,,,,,,,,,,,
+Class,Label Name,Data Type,Constant,Initial Value,Assign (Device/Label),Address,Comment,Comment 2,Comment 3,Comment 4,Comment 5,Japanese/???,English,Chinese Simplified/????,Korean/???,Chinese Traditional/????,German/Deutsch,Italian/Italiano,Reserved1,Reserved2,Reserved3,Reserved4,Remark,System Label Relation,System Label Name,Attribute
+,Ctrl_ScheduleEnabled,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_MondayEnabled,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_MondayStart,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_MondayStop,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_TuesdayEnabled,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_TuesdayStart,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_TuesdayStop,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_WednesdayEnabled,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_WednesdayStart,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_WednesdayStop,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_ThursdayEnabled,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_ThursdayStart,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_ThursdayStop,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_FridayEnabled,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_FridayStart,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_FridayStop,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_SaturdayEnabled,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_SaturdayStart,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_SaturdayStop,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_SundayEnabled,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_SundayStart,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_SundayStop,INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_Holiday_Date_Day,ARRAY [0..19] OF INT,,,,,,,,,,,,,,,,,,,,,,,,
+,Ctrl_Holiday_Date_Month,ARRAY [0..19] OF INT,,,,,,,,,,,,,,,,,,,,,,,,

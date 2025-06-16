@@ -1,8 +1,25 @@
-DYS-PIO-FCU (Y2025-M01-D08),,
-Class,Label Name,Data Type
-Yes,FB_Temperature,REAL
-Yes,FB_Setpoint,REAL
-,Ctrl_Mode,WORD
-Yes,Ctrl_Setpoint,REAL
-,Ctrl_Simulate,BOOL
-,Ctrl_Simulate_Temp,REAL
+DDC-22-1B (Y2025-M06-D01),,,,,,,,,,,,,,,,,,,,,,,,,,
+Class,Label Name,Data Type,Constant,Initial Value,Assign (Device/Label),Address,Comment,Comment 2,Comment 3,Comment 4,Comment 5,Japanese/???,English,Chinese Simplified/????,Korean/???,Chinese Traditional/????,German/Deutsch,Italian/Italiano,Reserved1,Reserved2,Reserved3,Reserved4,Remark,System Label Relation,System Label Name,Attribute
+Yes,FB_SlaveHealth,BOOL,,,,,,,,,,,Feedback: Slave health status (1=Healthy),,,,,,,,,,,,,
+,FB_SlaveID,INT,,,,,,,,,,,Feedback: Slave device identification number,,,,,,,,,,,,,
+Yes,FB_AlarmState,INT,,,,,,,,,,,"Feedback: Current alarm state (1=LLL, 2=LL, 3=L, 5=Normal, 7=H, 8=HH, 9=HHH , 99 = Transmitter Fault)",,,,,,,,,,,,,
+Yes,FB_Space_Temperature,REAL,,,,,,,,,,,Feedback: Space temperature measurement,,,,,,,,,,,,,
+Yes,FB_Local_Setpoint,REAL,,,,,,,,,,,Feedback: Local Setpoint of the Thermostat,,,,,,,,,,,,,
+,Ctrl_Mode,INT,,,,,,,,,,,Control: Mode (0 - SCADA Setpoint | 1 - Thermostat Setpoint),,,,,,,,,,,,,
+,Ctrl_Slave_Enabled,INT,,,,,,,,,,,Control: Enable/disable slave device (1=Enabled),,,,,,,,,,,,,
+,Ctrl_Simulate,INT,,,,,,,,,,,Control: Enable simulation mode (1=Simulation active),,,,,,,,,,,,,
+,Ctrl_Simulate_Health,INT,,,,,,,,,,,Control: Simulate health status (1=Healthy | 0=Unhealthy),,,,,,,,,,,,,
+,Ctrl_Simulate_Process_Value,REAL,,,,,,,,,,,Control: Simulate process value,,,,,,,,,,,,,
+,Ctrl_Offset_Process_Value,REAL,,,,,,,,,,,Control: Space temperature reading offset,,,,,,,,,,,,,
+Yes,Ctrl_Alarm_H_Enabled,INT,,,,,,,,,,,Control: High alarm enable (1=Enabled),,,,,,,,,,,,,
+Yes,Ctrl_Alarm_L_Enabled,INT,,,,,,,,,,,Control: Low alarm enable (1=Enabled),,,,,,,,,,,,,
+,Ctrl_Alarm_HH_Enabled,INT,,,,,,,,,,,Control: High-high alarm enable (1=Enabled),,,,,,,,,,,,,
+,Ctrl_Alarm_LL_Enabled,INT,,,,,,,,,,,Control: Low-low alarm enable (1=Enabled),,,,,,,,,,,,,
+,Ctrl_Alarm_HH_SP,REAL,,,,,,,,,,,Control: High-high alarm setpoint,,,,,,,,,,,,,
+,Ctrl_Alarm_HH_Delay,WORD,,,,,,,,,,,Control: High-high alarm delay in seconds,,,,,,,,,,,,,
+Yes,Ctrl_Alarm_H_SP,REAL,,,,,,,,,,,Control: High alarm setpoint,,,,,,,,,,,,,
+,Ctrl_Alarm_H_Delay,WORD,,,,,,,,,,,Control: High alarm delay in seconds,,,,,,,,,,,,,
+Yes,Ctrl_Alarm_L_SP,REAL,,,,,,,,,,,Control: Low alarm setpoint,,,,,,,,,,,,,
+,Ctrl_Alarm_L_Delay,WORD,,,,,,,,,,,Control: Low alarm delay in seconds,,,,,,,,,,,,,
+,Ctrl_Alarm_LL_SP,REAL,,,,,,,,,,,Control: Low-low alarm setpoint,,,,,,,,,,,,,
+,Ctrl_Alarm_LL_Delay,WORD,,,,,,,,,,,Control: Low-low alarm delay in seconds,,,,,,,,,,,,,

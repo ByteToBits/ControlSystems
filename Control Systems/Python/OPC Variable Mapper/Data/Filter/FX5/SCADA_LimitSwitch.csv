@@ -1,4 +1,0 @@
-DYS-PIO-FCU (Y2025-M01-D08),,,,,,,,,,,,,,,,,,,,,,,,,,
-Class,Label Name,Data Type,,,,,,,,,,,,,,,,,,,,,,,,Attribute
-Yes,SwitchTriggered,BOOL,,,,,,,,,,,,,,,,,,,,,,,,
-,HysteresisDelay,WORD,,,,,,,,,,,,,,,,,,,,,,,,
