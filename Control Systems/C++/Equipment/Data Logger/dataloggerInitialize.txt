@@ -1,0 +1,352 @@
+
+// Initiallizes the Data Logger & Configure the Scan Route of the I/Os
+// Company: Engine South East Asia
+// Date: 30/7/2024
+// Programmer: Tristan Sim
+
+// Update these Variables
+#_ConfigureString := 'Configure:Resistance 10000, (@101:120)';
+#_SendBufferLength := 80;
+
+// Concatenate the Configure String for Input Card 01
+IF #Card_01_Config.Enable THEN
+    "Concat_ConfigString"(Card_Index := 1,
+                          NumOf_Channels := #Card_01_Config.NumOf_Channels,
+                          Signal_Type := #Card_01_Config.Signal_Type,
+                          Signal_Range := #Card_01_Config.Signal_Range,
+                          OutString => #_ConfigureCard_1);
+END_IF;
+
+// Concatenate the Configure String for Input Card 02
+IF #Card_02_Config.Enable THEN
+    "Concat_ConfigString"(Card_Index := 2,
+                          NumOf_Channels := #Card_02_Config.NumOf_Channels,
+                          Signal_Type := #Card_02_Config.Signal_Type,
+                          Signal_Range := #Card_02_Config.Signal_Range,
+                          OutString => #_ConfigureCard_2);
+END_IF;
+
+// Concatenate the Configure String for Input Card 03
+IF #Card_03_Config.Enable THEN
+    "Concat_ConfigString"(Card_Index := 3,
+                          NumOf_Channels := #Card_03_Config.NumOf_Channels,
+                          Signal_Type := #Card_03_Config.Signal_Type,
+                          Signal_Range := #Card_03_Config.Signal_Range,
+                          OutString => #_ConfigureCard_3);
+END_IF;
+
+IF #Enable AND #ConnectionStatus THEN
+    
+    CASE #_State OF
+            
+        0:  // On First Entry from Inactive State
+            // Initialize Variables on First Entry 
+            #LoggerInitialized := False;
+            #SendPulse := False;
+            #_PulseSent := False;
+            
+            #Card_01_NumOfCH := 0; // Disbaled Since it has to be Re-conifgured
+            #Card_02_NumOfCH := 0; // Disbaled Since it has to be Re-conifgured
+            #Card_03_NumOfCH := 0; // Disbaled Since it has to be Re-conifgured
+            
+            // Clear the Send Buffer 
+            FOR #_iter_i := 0 TO #_SendBufferLength DO
+                #SendBuffer[#_iter_i] := '$00';
+            END_FOR;
+            
+            // Clear the Receive Buffer 
+            FOR #_iter_i := 0 TO 1000 DO
+                #ReceiveBuffer[#_iter_i] := '$00';
+            END_FOR;
+            
+            // Start Counter 
+            IF ("Clock_1Hz") AND NOT (#CountUp) THEN
+                #InternalCounter := #InternalCounter + 1;
+                #Counter := #InternalCounter;
+                #CountUp := True;
+            ELSIF NOT ("Clock_1Hz") AND (#CountUp) THEN
+                #CountUp := False;
+            END_IF;
+            
+            // Give 10 Seconds for Data Logger to Initialize
+            IF #InternalCounter >= 3 THEN
+                #InternalCounter := 0;
+                #Counter := #InternalCounter;
+                #_State := 1;
+            END_IF;
+            
+        1:  // State: Reset Data Logger 
+            
+            // Parse String Type to Character Type
+            Strg_TO_Chars(Strg := '*RST',
+                          pChars := 0,
+                          Cnt => #LengthOfCharacters,
+                          Chars := #SendBuffer);
+            
+            #BufferLength := UDINT_TO_INT(#LengthOfCharacters) + 2;
+            #SendBuffer[#BufferLength - 2] := '$R';      // Carraige Return Character
+            #SendBuffer[#BufferLength - 1] := '$L';      // New Line Character
+            #SendLength := INT_TO_UDINT(#BufferLength);
+            
+            // Send TCP Data Pulse 
+            IF #InternalCounter = 1 THEN
+                #SendPulse := True;
+            ELSIF (#BufferSent) OR #InternalCounter > 1 THEN
+                #SendPulse := False;
+            END_IF;
+            
+            // Start Counter 
+            IF ("Clock_1Hz") AND NOT (#CountUp) THEN
+                #InternalCounter := #InternalCounter + 1;
+                #Counter := #InternalCounter;
+                #CountUp := True;
+            ELSIF NOT ("Clock_1Hz") AND (#CountUp) THEN
+                #CountUp := False;
+            END_IF;
+            
+            // Change State to "Configure I/O" Channels 
+            IF #InternalCounter >= 2 THEN
+                #InternalCounter := 0;
+                #Counter := #InternalCounter;
+                #_State := 2;
+                #SendPulse := False;
+            END_IF;
+            
+        2:  // Clear Errors
+            
+            // Clear the Send Buffer 
+            FOR #_iter_i := 0 TO #_SendBufferLength DO
+                #SendBuffer[#_iter_i] := '$00';
+            END_FOR;
+            
+            // Parse String Type to Character Type
+            Strg_TO_Chars(Strg := '*CLS',
+                          pChars := 0,
+                          Cnt => #LengthOfCharacters,
+                          Chars := #SendBuffer);
+            
+            #BufferLength := UDINT_TO_INT(#LengthOfCharacters) + 2;
+            #SendBuffer[#BufferLength - 2] := '$R';      // Carraige Return Character
+            #SendBuffer[#BufferLength - 1] := '$L';      // New Line Character
+            #SendLength := INT_TO_UDINT(#BufferLength);
+            
+            // Send TCP Data Pulse 
+            IF #InternalCounter = 1 THEN
+                #SendPulse := True;
+            ELSIF (#BufferSent) OR #InternalCounter > 1 THEN
+                #SendPulse := False; 
+            END_IF;
+            
+            // Start Counter 
+            IF ("Clock_1Hz") AND NOT (#CountUp) THEN
+                #InternalCounter := #InternalCounter + 1;
+                #Counter := #InternalCounter;
+                #CountUp := True;
+            ELSIF NOT ("Clock_1Hz") AND (#CountUp) THEN
+                #CountUp := False;
+            END_IF;
+            
+            // Change State to "Configure I/O" Channels 
+            IF #InternalCounter >= 2 THEN
+                #InternalCounter := 0;
+                #Counter := #InternalCounter;
+                #_State := 10;
+                #SendPulse := False;
+            END_IF;
+            
+        10: // Configure I/O Channels Card 1
+            
+            IF #Card_01_Config.Enable THEN
+                
+                // Clear the Send Buffer 
+                FOR #_iter_i := 0 TO #_SendBufferLength DO
+                    #SendBuffer[#_iter_i] := '$00';
+                END_FOR;
+                
+                // Parse String Type to Character Type
+                Strg_TO_Chars(Strg := #_ConfigureCard_1,
+                              pChars := 0,
+                              Cnt => #LengthOfCharacters,
+                              Chars := #SendBuffer);
+                
+                #BufferLength := UDINT_TO_INT(#LengthOfCharacters) + 2;
+                #SendBuffer[#BufferLength - 2] := '$R';       // Carraige Return Character
+                #SendBuffer[#BufferLength - 1] := '$L';       // New Line Character
+                #SendLength := INT_TO_UDINT(#BufferLength);
+                
+                // Start Counter 
+                IF ("Clock_1Hz") AND NOT (#CountUp) THEN
+                    #InternalCounter := #InternalCounter + 1;
+                    #Counter := #InternalCounter;
+                    #CountUp := True;
+                ELSIF NOT ("Clock_1Hz") AND (#CountUp) THEN
+                    #CountUp := False;
+                END_IF;
+                
+                // Send TCP Data Pulse
+                IF #InternalCounter = 1 THEN
+                    #SendPulse := True;
+                ELSIF (#BufferSent) OR #InternalCounter > 1 THEN
+                    #SendPulse := False;
+                END_IF;
+               
+                // Number OF Channels Configured | 0 = Disabled
+                #Card_01_NumOfCH := #Card_01_Config.NumOf_Channels; 
+                
+                // Change State to "Configure I/O" Channels 
+                IF #InternalCounter >= 3 THEN
+                    #InternalCounter := 0;
+                    #Counter := #InternalCounter;
+                    #_State := 20;
+                    #SendPulse := False;
+                END_IF;
+                
+            ELSE
+                #InternalCounter := 0;
+                #Counter := #InternalCounter;
+                #_State := 20;
+                #SendPulse := False;
+            END_IF;
+            
+        20: // Configure I/O Channels Card 2
+            
+            IF #Card_02_Config.Enable THEN
+                
+                // Clear the Send Buffer 
+                FOR #_iter_i := 0 TO #_SendBufferLength DO
+                    #SendBuffer[#_iter_i] := '$00';
+                END_FOR;
+                
+                // Parse String Type to Character Type
+                Strg_TO_Chars(Strg := #_ConfigureCard_2,
+                              pChars := 0,
+                              Cnt => #LengthOfCharacters,
+                              Chars := #SendBuffer);
+                
+                #BufferLength := UDINT_TO_INT(#LengthOfCharacters) + 2;
+                #SendBuffer[#BufferLength - 2] := '$R';       // Carraige Return Character
+                #SendBuffer[#BufferLength - 1] := '$L';       // New Line Character
+                #SendLength := INT_TO_UDINT(#BufferLength);
+                
+                // Start Counter 
+                IF ("Clock_1Hz") AND NOT (#CountUp) THEN
+                    #InternalCounter := #InternalCounter + 1;
+                    #Counter := #InternalCounter;
+                    #CountUp := True;
+                ELSIF NOT ("Clock_1Hz") AND (#CountUp) THEN
+                    #CountUp := False;
+                END_IF;
+                
+                // Send TCP Data Pulse
+                IF #InternalCounter = 1 THEN
+                    #SendPulse := True;
+                ELSIF (#BufferSent) OR #InternalCounter > 1 THEN
+                    #SendPulse := False;
+                END_IF;
+                
+                // Number OF Channels Configured | 0 = Disabled
+                #Card_02_NumOfCH := #Card_02_Config.NumOf_Channels;
+                
+                // Change State to "Configure I/O" Channels 
+                IF #InternalCounter >= 3 THEN
+                    #InternalCounter := 0;
+                    #Counter := #InternalCounter;
+                    #_State := 30;
+                    #SendPulse := False;
+                END_IF;
+                
+            ELSE
+                #InternalCounter := 0;
+                #Counter := #InternalCounter;
+                #_State := 30;
+                #SendPulse := False;
+            END_IF;
+            
+        30: // Configure I/O Channels Card 2
+            
+            IF #Card_02_Config.Enable THEN
+                
+                // Clear the Send Buffer 
+                FOR #_iter_i := 0 TO #_SendBufferLength DO
+                    #SendBuffer[#_iter_i] := '$00';
+                END_FOR;
+                
+                // Parse String Type to Character Type
+                Strg_TO_Chars(Strg := #_ConfigureCard_3,
+                              pChars := 0,
+                              Cnt => #LengthOfCharacters,
+                              Chars := #SendBuffer);
+                
+                #BufferLength := UDINT_TO_INT(#LengthOfCharacters) + 2;
+                #SendBuffer[#BufferLength - 2] := '$R';       // Carraige Return Character
+                #SendBuffer[#BufferLength - 1] := '$L';       // New Line Character
+                #SendLength := INT_TO_UDINT(#BufferLength);
+                
+                // Start Counter 
+                IF ("Clock_1Hz") AND NOT (#CountUp) THEN
+                    #InternalCounter := #InternalCounter + 1;
+                    #Counter := #InternalCounter;
+                    #CountUp := True;
+                ELSIF NOT ("Clock_1Hz") AND (#CountUp) THEN
+                    #CountUp := False;
+                END_IF;
+                
+                // Send TCP Data Pulse
+                IF #InternalCounter = 1 THEN
+                    #SendPulse := True;
+                ELSIF (#BufferSent) OR #InternalCounter > 1 THEN
+                    #SendPulse := False;
+                END_IF;
+                
+                // Number OF Channels Configured | 0 = Disabled
+                #Card_03_NumOfCH := #Card_03_Config.NumOf_Channels;
+                
+                // Change State to "Configure I/O" Channels 
+                IF #InternalCounter >= 2 THEN
+                    #InternalCounter := 0;
+                    #Counter := #InternalCounter;
+                    #_State := 50;
+                    #SendPulse := False;
+                END_IF;
+                
+            ELSE
+                #InternalCounter := 0;
+                #Counter := #InternalCounter;
+                #_State := 50;
+                #SendPulse := False;
+            END_IF;
+            
+        50: // No Configuration | If No Channels have been Configured = Maintain State 50 | Reset Data Logger to Initiialize
+            IF ((#Card_01_NumOfCH + #Card_02_NumOfCH + #Card_03_NumOfCH) > 0) THEN
+                #_State := 100;
+            END_IF;
+            
+        100: // Initialization & Configuration Complete 
+
+            #LoggerInitialized := TRUE;
+            #BufferLength := 0;
+            #SendPulse := False;
+            
+    END_CASE;
+    
+ELSE
+    // Reset Variables
+    #_State := 0;
+    #BufferLength := 0;
+    #InternalCounter := 0;
+    #Counter := 0; 
+    #CountUp := False;
+    #LoggerInitialized := False;
+    #SendPulse := False;
+    #SendLength := 0; 
+
+    // Clear the Send Buffer 
+    FOR #_iter_i := 0 TO #_SendBufferLength DO
+        #SendBuffer[#_iter_i] := '$00';
+    END_FOR;
+    
+END_IF;
+
+#State := #_State;
+
+

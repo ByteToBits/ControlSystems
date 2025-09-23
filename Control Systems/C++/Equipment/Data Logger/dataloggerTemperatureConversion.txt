@@ -1,0 +1,26 @@
+
+// Temperature Conversion from Raw Rssistance Value
+#_Kelvin := -273.15;
+
+// Convert Real (32-Bit) to Long Real (64-Bit)
+#_A := REAL_TO_LREAL(#A) * LREAL#10.0**(#A_Exponent) ;
+#_B := REAL_TO_LREAL(#B) * LREAL#10.0**(#B_Exponent);
+#_C := REAL_TO_LREAL(#C) * LREAL#10.0**(#C_Exponent);
+#_Offset := REAL_TO_LREAL(#Offset); 
+
+IF #ResistanceValue > 10 AND #ResistanceRange > 0 THEN
+        
+   // Logarithm (Resistance) - Remarks Log to the Base of E (Euler's Number)
+//    #_LogResistance := LN(#ResistanceValue) / LN(2.71828);
+    #_LogResistance := LN(#ResistanceValue);
+        
+   // Temperature Conversion Equation (64-Bit Caculation)
+    #_Temperature := (1/(#_A + #_B*#_LogResistance + #_C*#_LogResistance**3)) + #_Kelvin + #_Offset;
+
+    
+   // Write to Output
+   #Temperature := LREAL_TO_REAL(#_Temperature);
+   
+ELSE
+   #Temperature := 0.0;
+END_IF;

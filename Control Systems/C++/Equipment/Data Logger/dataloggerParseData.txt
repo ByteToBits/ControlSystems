@@ -1,0 +1,135 @@
+
+// Parse Data: Converts the Raw Bytes of Data into Float Values 
+// Raw Bytes are Received in a Form of a TCP Packet encoded in ANSII
+// Additionally, Converts Raw Resistance Values to 32-Bit Temperature values (Celsius)
+// through Low Level Means
+
+// Company: Engie South East Asia
+// Programmer: Tristan Sim
+
+// Input: 1 Channel Length - 15 Chars [ +9.98031950E+03 ](Character Form) 
+//        Delimiter = ','
+//        Newline Character - '15#0D'(Hex) or '$L'(Char)
+//        Carriage Return - '15#0A'(Hex) or '$R'(Char)
+
+// Declare Variables
+#_Kelvin := -273.15;
+
+// Array of Bytes in ASCII Form [0 - 9, '+', '-', '.', ',', 'E', '$R', '$L,] 
+
+#ASCII_Table[0] := 16#30;    (* Char: 0 *)     #ASCII_Table[1] := 16#31;    (* Char: 1 *)
+#ASCII_Table[2] := 16#32;    (* Char: 2 *)     #ASCII_Table[3] := 16#33;    (* Char: 3 *)
+#ASCII_Table[4] := 16#34;    (* Char: 4 *)     #ASCII_Table[5] := 16#35;    (* Char: 5 *)
+#ASCII_Table[6] := 16#36;    (* Char: 6 *)     #ASCII_Table[7] := 16#37;    (* Char: 7 *)
+#ASCII_Table[8] := 16#38;    (* Char: 8 *)     #ASCII_Table[9] := 16#39;    (* Char: 9 *)
+
+#ASCII_Table[10] := 16#2B;   (* Char: + *)     #ASCII_Table[11] := 16#2D;   (* Char: - *)
+#ASCII_Table[12] := 16#2E;   (* Char: . *)     #ASCII_Table[13] := 16#2C;   (* Char: , *)
+#ASCII_Table[13] := 16#45;   (* Char: E *)
+
+#ASCII_Table[14] := 16#0D;   (* Char: $R - Carriage Return *)
+#ASCII_Table[15] := 16#0A;   (* Char: $l - Line Feed/Newline Character *)
+
+// Resolve the Multiplier Numbers (Exponent Component)
+IF #DataLoggerReady THEN 
+  FOR #_iter_I := 0 TO 9 DO
+     IF #ReceiveBuffer[#StartIndex + 13] = #ASCII_Table[#_iter_I] THEN
+        #_Multiplier_01 := INT_TO_REAL(#_iter_I)*10.0;
+     END_IF;
+     IF #ReceiveBuffer[#StartIndex + 14] = #ASCII_Table[#_iter_I] THEN
+        #_Multiplier_02 := INT_TO_REAL(#_iter_I);
+     END_IF;
+  END_FOR;
+  // Determine the Multiplier Value 
+  #_Multiplier := REAL_TO_LREAL(#_Multiplier_01 + #_Multiplier_02);
+END_IF;
+
+// Check if the Multiplier is within Range (10,000 (4 dec) or 1,000 (3 dec) OR 100 (2 dec) places) 
+// 10K Ohm Thermistors | PT 1000 RTD | PT 100 RTD
+// +9.98031950E+03  // Start at Index 2 - 10 Characters Long - Decimal at Position Index 3
+
+IF #_Multiplier < 5.0 AND #_Multiplier > 1.0 AND #DataLoggerReady THEN
+    
+    // Initialize
+    #_OverloadFlag := False;
+    #_TempResistance := 0.0;
+    #_ResistanceRaw := 0.0;
+    
+    // Find Value of First Number (Before Decimal Place)
+    FOR #_iter_I := 0 TO 9 DO
+        IF #ReceiveBuffer[#StartIndex + 1] = #ASCII_Table[#_iter_I] THEN
+            #_TempResistance := INT_TO_LREAL(#_iter_I);
+            #_ValidValue := True; // If Value Returned is between 0-9
+        END_IF;
+    END_FOR;
+    
+    IF #_ValidValue THEN
+        #_ResistanceRaw := #_TempResistance * (LREAL#10.0 ** #_Multiplier);
+    ELSE
+        #_ResistanceRaw := 0.0;
+    END_IF;
+    
+    
+    // Convert Values After Decimal Place to Float (Index 4 - 12 - Length 8) 
+    
+    FOR #_iter_I := 3 TO 10 DO
+        
+        #_TempResistance := 0.0; // Initialize Every Cycle
+        #_ValidValue := False;   // Set False if Value is not in range of 0-9
+        #_Multiplier := #_Multiplier - 1.0; // Decrement
+        
+        // Resolve the Character Into Numerical Value
+        FOR #_iter_J := 0 TO 9 DO
+            IF #ReceiveBuffer[#StartIndex + #_iter_I] = #ASCII_Table[#_iter_J] THEN
+                #_TempResistance := INT_TO_LREAL(#_iter_J) * (LREAL#10.0 ** (#_Multiplier));
+                #_ValidValue := True; // If Value Returned is between 0-9
+            END_IF;
+        END_FOR;
+        
+        // Catch Data Type Error | Write Value to 0 Instead
+        IF NOT (#_ValidValue) THEN
+            #_TempResistance := 0.0;
+        END_IF;
+        
+        #_ResistanceRaw := #_ResistanceRaw + #_TempResistance;
+        
+    END_FOR;
+    
+ELSE
+    #_Multiplier := LIMIT(MN := 2, IN := #_Multiplier, MX := 5);
+    
+    IF #DataLoggerReady THEN
+        #_ResistanceRaw := 99999.99; // Resistance Overload
+    ELSE
+        #_ResistanceRaw := 0.0; // Data Logger Not Ready
+    END_IF;
+END_IF;
+
+// Write to Output
+#ResistanceL := #_ResistanceRaw;
+#Resistance := LREAL_TO_REAL(#_ResistanceRaw);
+
+// This Section is to Convert Resistance to Temperature --------------------------------------------------------------------- 
+
+// Convert Real (32-Bit) to Long Real (64-Bit)
+#_A := REAL_TO_LREAL(#A) * LREAL#10.0 ** (#A_Exponent);
+#_B := REAL_TO_LREAL(#B) * LREAL#10.0 ** (#B_Exponent);
+#_C := REAL_TO_LREAL(#C) * LREAL#10.0 ** (#C_Exponent);
+#_Offset := REAL_TO_LREAL(#Offset);
+
+// Calculate the Temperature
+IF #_ResistanceRaw > 10 AND #DataLoggerReady AND (#_A+#_B+#_C > 0) THEN
+    // Logarithm (Resistance) - Remarks Log to the Base of E (Euler's Number)
+ //   #_LogResistance := LN(#_ResistanceRaw) / LN(2.71828);
+    #_LogResistance := LN(#_ResistanceRaw) ;
+    // Temperature Conversion Equation (64-Bit Caculation)
+    #_Temperature := (1 / (#_A + #_B * #_LogResistance + #_C * #_LogResistance ** 3)) + #_Kelvin + #_Offset;
+ 
+    
+    // Write to Output
+    #Temperature := LREAL_TO_REAL(#_Temperature);
+ELSE
+    #Temperature := 0.0;
+END_IF;
+
+
