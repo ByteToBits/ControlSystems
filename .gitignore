@@ -1,0 +1,10 @@
+ControlSystems.sln
+yolov8n.pt
+*.pt
+*.pth
+venv/
+__pycache__/
+*.pyc
+.vs/
+bin/
+obj/
