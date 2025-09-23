@@ -113,7 +113,7 @@ def count_occupants(frame):
     
     return occupantCount, annotatedFrame
 
-
+# Function: Single Shot Image Detection for Single Image Inputs
 def single_shot_image_detection(imagePath):
     """ 
     Single-Shot Image Detection Function to Determine Number of Occupants
@@ -158,7 +158,7 @@ def single_shot_image_detection(imagePath):
         print(f"Error processing image: {str(e)}")
         return 0
 
-1
+
 if __name__ == "__main__":
     
     print("\nOccupancy Detection Test")
