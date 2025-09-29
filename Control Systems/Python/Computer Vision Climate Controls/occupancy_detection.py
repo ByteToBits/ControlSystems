@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Occupancy Detection Function File used to Determine the Number of Occupants 
 in a given image or video stream and returns the value as a Integer
