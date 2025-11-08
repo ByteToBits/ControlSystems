@@ -11,41 +11,6 @@
 
 # Fetch Data From File (Meters Serve Individual Blocks)
 
-# File Structure - Folder: J_B_82_10_27
-#                      File: X01_01_20250801_70_01_ACCBTUReadingS11MIN.txt - RTH Data
-#                      File: X01_01_20250801_70_01_BTUREADINGS11MIN.txt - RT Data
-#                      File: ... Next Month
-
-# J_B_82_10_27
-# Block 82: B_82
-# Unique BTU ID based on Block: 10_27
-
-# X01_01_20250801_70_01_ACCBTUReadingS11MIN.txt - RTH Data
-# Constants: X01_01_  70_01_ACCBTUReadingS11MIN.txt
-# Dynamic Variable: 20250801   Year (2025) Month (08) Day (01)
-
-# Raw Data Format (Old)
-"""
-#start (Question: Newer Data Set Does not Contain this - Will it be omitted from future data?)
-15.08.2025 10:08:55 1.2908564
-15.08.2025 10:09:00 2.5826838
-.... 
-31.08.2025 00:24:00 4.3564544
-31.08.2025 00:25:00 4.2770133
-#stop (Question: Newer Data Set Does not Contain this - Will it be omitted from future data?)
-"""
-
-# Raw Data Format (New - 44640 Datapoints)
-"""
-01.10.2025 00:00:00 7763.3203  - First Data 
-01.10.2025 00:01:00 7763.422
-01.10.2025 00:02:00 7763.5176
-...
-31.10.2025 23:57:00 14842.312s
-31.10.2025 23:58:00 14842.435
-31.10.2025 23:59:00 14842.554  - Last Data
-"""
-
 # Monthly BTU Data per Block
 # Purpoaw (Billing)
 # B22 BTU 1 RTH = Last Data - First Data = 14842.554 - 7763.3203 = 7,079.2337 RTH
@@ -66,15 +31,22 @@ import time
 import os
 
 # Initial: Initialize Data
-pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data'
+targetMonth = '10'
+targetYear = '2025'
+pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data' # Absolute Path to Working Directory
+pathOutputFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\Metering Summary Report'
+
+MONTHS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 DEBUG_FLAG = True
 DELIMITER = ';'
+DATETIME_START_INDEX = 7 # Datetime starts frpm the 7th Character in the File Name
 
-# Dynamically Populated - Can be Statically Assigned herein these Array
-btuNameList = []        # BTU Name List
-btuFileList_RT = []     # RT File Name List
-btuFileList_RTH = []    # RTH File Name List
+# Dynamically Populated - Can also be Statically Assigned herein these Array
+btuNameList = []          # BTU Name List         J_B_82_10_27
+btuFileList_RT = []       # RT File Name List     J_B_82_10_27/X01_01_20250801_70_01_BTUREADINGS11MIN.txt
+btuFileList_RTH = []      # RTH File Name List    J_B_82_10_27/X01_01_20250801_70_01_ACCBTUReadingS11MIN.txt
 
+targetTimestamp = targetYear + targetMonth
 btuNamePrefix = ["J_B_"]
 dataFilePrefix = ["X01_01_"]
 dataFilePostfix = ["ACCBTUReadingS11MIN.txt", "BTUREADINGS11MIN.txt"]
@@ -93,35 +65,28 @@ if os.path.exists(pathDataFolder):
 else: 
     print(f"Error:No Data folder found in {pathDataFolder}")
 
-# Fetch All File Name (With Folder Name Information) and Store it in List
-# for btuName in btuNameList: 
-#     if os.path.exists(os.path.join(pathDataFolder, btuName)): 
-        
+# Fetch All File Names (With Parent Folder Name Information) and Store it in List:
+for btuName in btuNameList: 
+    # Concatenate the Complete Folder Path for the BTU Meters
+    concatBTUFolderPath = os.path.join(pathDataFolder, btuName)
 
+    # Iterate through to retrieve the File Names and store them in a List for easy referencing
+    if os.path.exists(concatBTUFolderPath): 
 
-
-# # Fetch All File Name (With Folder Name Information) and Store it in List
-# for btuName in btuNameList: 
-#     folderPath = os.path.join(pathDataFolder, btuName)
-    
-#     if os.path.exists(folderPath): 
-#         # Get all files in this BTU folder
-#         for file in os.listdir(folderPath):
-#             filePath = os.path.join(folderPath, file)
-            
-#             # Check if it's a file (not a subdirectory)
-#             if os.path.isfile(filePath):
-#                 # Check if file matches the prefix and postfix criteria
-#                 if file.startswith(tuple(dataFilePrefix)) and file.endswith(tuple(dataFilePostfix)):
-#                     # Create the concatenated string: btu_name;filename.txt
-#                     concatenatedName = f"{btuName}{DELIMITER}{file}"
-                    
-#                     # Categorize based on file ending
-#                     if file.endswith("BTUREADINGS11MIN.txt"):  # RT ends with BTU
-#                         btuFileList_RT.append(concatenatedName)
-#                     elif file.endswith("ACCBTUReadingS11MIN.txt"):  # RTH ends with ACCBTU
-#                         btuFileList_RTH.append(concatenatedName)
-
+        for file in os.listdir(concatBTUFolderPath): 
+             # Check if the Date of the File Meets the Target Data and Classify based on File Post Fix Text
+            if file.startswith(dataFilePrefix[0] + targetTimestamp) and file.endswith(dataFilePostfix[0]):
+                btuFileList_RT.append(btuName + DELIMITER + file)
+            elif file.startswith(dataFilePrefix[0] + targetTimestamp) and file.endswith(dataFilePostfix[1]):
+                btuFileList_RTH.append(btuName + DELIMITER + file)
+               
+# Print the Files Retrieved based on Search Criteria     
+if DEBUG_FLAG == True: 
+   print("\nFiles Retrieve for RT Data (for Month of " + targetMonth + " and Year of " + targetYear + "):")
+   for file in btuFileList_RT: print("- " + file)
+   print("\nFiles Retrieve for RTH (for Month of " + targetMonth + " and Year of " + targetYear + "):")
+   for file in btuFileList_RTH: print("- " + file)
+   
 
 
 # Step 1: Load Data from Text File (Try & Catch to Handle Abnormal Data)
