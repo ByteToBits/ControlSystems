@@ -30,6 +30,9 @@ import time
 # import openpyxl
 import os
 
+# Import Custom Library
+import fetch_data
+
 # Initial: Initialize Data
 targetMonth = '10'
 targetYear = '2025'
@@ -51,19 +54,11 @@ btuNamePrefix = ["J_B_"]
 dataFilePrefix = ["X01_01_"]
 dataFilePostfix = ["ACCBTUReadingS11MIN.txt", "BTUREADINGS11MIN.txt"]
 
+
+# Step 1: Fetch all the File and Folder Information
+
 # Fetch All Folder Name of Each BTU Meter and Store it in List
-if os.path.exists(pathDataFolder): 
-    # Get all the subdirectories in the Metering Data Folder
-    for folder in os.listdir(pathDataFolder): 
-        if os.path.isdir(os.path.join(pathDataFolder, folder)): 
-            if folder.startswith(tuple(btuNamePrefix)): 
-               btuNameList.append(folder)   
-    if DEBUG_FLAG == True: 
-        print(f'Found {len(btuNameList)} BTU Meters:')
-        for btuName in btuNameList: 
-            print(f"- {btuName}")
-else: 
-    print(f"Error:No Data folder found in {pathDataFolder}")
+btuNameList = fetch_data.list_Folder_Names(pathDataFolder, btuNamePrefix, DEBUG_FLAG)
 
 # Fetch All File Names (With Parent Folder Name Information) and Store it in List:
 for btuName in btuNameList: 
@@ -88,8 +83,11 @@ if DEBUG_FLAG == True:
    for file in btuFileList_RTH: print("- " + file)
    
 
+# Step 2: Load Data from Text File to a Dataframe (Try & Catch to Handle Abnormal Data)
 
-# Step 1: Load Data from Text File (Try & Catch to Handle Abnormal Data)
+
+
+
 
 # Step 2: Parse the Text Data (Date & Process Value) to a Data Frame 
 
