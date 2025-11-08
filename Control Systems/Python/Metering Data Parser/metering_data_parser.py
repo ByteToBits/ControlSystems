@@ -58,28 +58,30 @@ dataFilePostfix = ["ACCBTUReadingS11MIN.txt", "BTUREADINGS11MIN.txt"]
 # Step 1: Fetch all the File and Folder Information
 
 # Fetch All Folder Name of Each BTU Meter and Store it in List
-btuNameList = fetch_data.list_Folder_Names(pathDataFolder, btuNamePrefix, DEBUG_FLAG)
+btuNameList = fetch_data.list_Folder_Names(folderPath = pathDataFolder, namePrefix = btuNamePrefix, debugFlag = DEBUG_FLAG)
+
+prefixSearchCriteria = dataFilePrefix[0] + targetTimestamp # Searches for Prefix that matches "X01_01_202508"
 
 # Fetch All File Names (With Parent Folder Name Information) and Store it in List:
-for btuName in btuNameList: 
-    # Concatenate the Complete Folder Path for the BTU Meters
-    concatBTUFolderPath = os.path.join(pathDataFolder, btuName)
+btuFileList_RT = fetch_data.list_File_Names(parentFolderPath = pathDataFolder,
+                                            childFolderNames = btuNameList,
+                                            prefix = prefixSearchCriteria,
+                                            postfix = (dataFilePostfix[0]),
+                                            delimiter = DELIMITER,
+                                            debugFlag = DEBUG_FLAG)
 
-    # Iterate through to retrieve the File Names and store them in a List for easy referencing
-    if os.path.exists(concatBTUFolderPath): 
-
-        for file in os.listdir(concatBTUFolderPath): 
-             # Check if the Date of the File Meets the Target Data and Classify based on File Post Fix Text
-            if file.startswith(dataFilePrefix[0] + targetTimestamp) and file.endswith(dataFilePostfix[0]):
-                btuFileList_RT.append(btuName + DELIMITER + file)
-            elif file.startswith(dataFilePrefix[0] + targetTimestamp) and file.endswith(dataFilePostfix[1]):
-                btuFileList_RTH.append(btuName + DELIMITER + file)
+btuFileList_RTH = fetch_data.list_File_Names(parentFolderPath = pathDataFolder,
+                                            childFolderNames = btuNameList,
+                                            prefix = prefixSearchCriteria,
+                                            postfix = (dataFilePostfix[1]),
+                                            delimiter = DELIMITER,
+                                            debugFlag = DEBUG_FLAG)
                
 # Print the Files Retrieved based on Search Criteria     
 if DEBUG_FLAG == True: 
-   print("\nFiles Retrieve for RT Data (for Month of " + targetMonth + " and Year of " + targetYear + "):")
+   print("\nFiles Retrieve for RT Data (Month: " + targetMonth + " and Year: " + targetYear + "):")
    for file in btuFileList_RT: print("- " + file)
-   print("\nFiles Retrieve for RTH (for Month of " + targetMonth + " and Year of " + targetYear + "):")
+   print("\nFiles Retrieve for RTH Data (Month: " + targetMonth + " and Year: " + targetYear + "):")
    for file in btuFileList_RTH: print("- " + file)
    
 

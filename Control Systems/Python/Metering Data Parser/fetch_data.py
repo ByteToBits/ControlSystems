@@ -16,9 +16,11 @@ import numpy as np
 import os
 from typing import List, Tuple
 
-def list_Folder_Names(folderPath: str, namePrefix: List[str], debugFlag: bool):
+# Function: List Folder Names
+# Fetch All Folder Name of Each BTU Meter matching the given prefixes  and Store it in List 
+def list_Folder_Names(folderPath: str, namePrefix: List[str], debugFlag: bool) -> List[str]:
     """
-    Fetch All Folder Name of Each BTU Meter matching the given prefixes  and Store it in List  
+    Fetch All Folder Name of Each BTU Meter matching the given prefixes  and Store it in List.
     Args:
         folderPath: Path to the Parent data folder
         namePrefix: List of valid File Name Prefixes      
@@ -43,5 +45,36 @@ def list_Folder_Names(folderPath: str, namePrefix: List[str], debugFlag: bool):
     return sorted(folderNames)  
 
 
+# Function: List File Names
+# Fetch All File Names (With Parent Folder Name Information) and Store it in List:
+def list_File_Names(parentFolderPath: str, childFolderNames: List[str], prefix: str, postfix: str, delimiter: str, debugFlag: bool) -> List[str]:
+    """
+    Fetch all file names matching the given prefix and postfix from child folders.
+    Args:
+        parentFolderPath: Path to the parent data folder
+        childFolderNames: List of child folder names to search
+        prefix: File name prefix to match
+        postfix: File name postfix to match
+        delimiter: Delimiter to separate folder name and file name
+        debugFlag: Enable debug output     
+    Returns:
+        List of out all the File Names Sorted based on Child Folder Name
+    """
+    fileNames = []
 
+    # Fetch All File Names (With Parent Folder Name Information) and Store it in List:
+    for folderName in childFolderNames: 
+        # Concatenate the Complete Folder Path for the BTU Meters
+        concatBTUFolderPath = os.path.join(parentFolderPath, folderName)
+
+        # Iterate through to retrieve the File Names and store them in a List for easy referencing
+        if os.path.exists(concatBTUFolderPath): 
+
+            for file in os.listdir(concatBTUFolderPath): 
+                # Check if the Date of the File Meets the Target Data and Classify based on File Post Fix Text
+                if file.startswith(prefix) and file.endswith(postfix):
+                    fileNames.append(folderName + delimiter + file)
+
+    return sorted(fileNames)
+               
 
