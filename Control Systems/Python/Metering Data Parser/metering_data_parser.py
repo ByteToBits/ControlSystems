@@ -32,6 +32,7 @@ import os
 
 # Import Custom Library
 import fetch_data
+import parse_data
 
 # Initial: Initialize Data
 targetMonth = '10'
@@ -53,6 +54,8 @@ targetTimestamp = targetYear + targetMonth
 btuNamePrefix = ["J_B_"]
 dataFilePrefix = ["X01_01_"]
 dataFilePostfix = ["ACCBTUReadingS11MIN.txt", "BTUREADINGS11MIN.txt"]
+
+
 
 
 # Step 1: Fetch all the File and Folder Information 
@@ -89,72 +92,9 @@ if DEBUG_FLAG == True:
 
 # Step 2: Load Data from Text File to a Raw Data into a Dataframe 
 
+diagStats_Registers = []
 
-print("\n" + "="*80)
-print("TESTING WITH SINGLE FILE")
-print("="*80)
-
-# Test with the first RT file
-if len(btuFileList_RT) > 0:
-    testFileInfo = btuFileList_RT[0]  # Get first file
-    
-    # Parse the file info: "meterName;fileName"
-    parts = testFileInfo.split(DELIMITER)
-    if len(parts) == 2:
-        meterName = parts[0]
-        fileName = parts[1]
-        filePath = os.path.join(pathDataFolder, meterName, fileName)
-        
-        print(f"\n📁 Testing with: {meterName} - {fileName}")
-        print(f"📂 Full path: {filePath}")
-        
-        try:
-            # Call the function and unpack both returns
-            rawData, diagnostics = fetch_data.read_Raw_Text_Data(
-                filePath=filePath,
-                encoding='utf-8',
-                healthCheck=True,
-                debugFlag=True  # Enable debug to see detailed output
-            )
-            
-            print("\n" + "="*80)
-            print("RESULTS")
-            print("="*80)
-            
-            # Show diagnostics
-            print("\n📊 Diagnostic Statistics:")
-            for key, value in diagnostics.items():
-                print(f"  {key}: {value}")
-            
-            # Show first few data points
-            print("\n📋 First 5 Data Points:")
-            for i, datapoint in enumerate(rawData[:5]):
-                print(f"  {i+1}. {datapoint}")
-            
-            # Show last few data points
-            print("\n📋 Last 5 Data Points:")
-            for i, datapoint in enumerate(rawData[-5:]):
-                print(f"  {i+1}. {datapoint}")
-            
-            # Convert to DataFrame to see structure
-            df_test = pd.DataFrame(rawData)
-            print("\n📊 DataFrame Info:")
-            print(df_test.info())
-            print("\n📊 DataFrame Head:")
-            print(df_test.head(10))
-            print("\n📊 DataFrame Tail:")
-            print(df_test.tail(10))
-            
-            # Check health distribution
-            print("\n🏥 Health Status Distribution:")
-            print(df_test['Health'].value_counts())
-            
-        except Exception as e:
-            print(f"❌ Error processing file: {e}")
-            import traceback
-            traceback.print_exc()
-else:
-    print("⚠️ No RT files found to test!")
+# Initialize Panda Frame for Current Block
 
 
 
