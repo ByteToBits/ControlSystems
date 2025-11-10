@@ -55,12 +55,13 @@ dataFilePrefix = ["X01_01_"]
 dataFilePostfix = ["ACCBTUReadingS11MIN.txt", "BTUREADINGS11MIN.txt"]
 
 
-# Step 1: Fetch all the File and Folder Information
+# Step 1: Fetch all the File and Folder Information 
 
 # Fetch All Folder Name of Each BTU Meter and Store it in List
 btuNameList = fetch_data.list_Folder_Names(folderPath = pathDataFolder, namePrefix = btuNamePrefix, debugFlag = DEBUG_FLAG)
 
-prefixSearchCriteria = dataFilePrefix[0] + targetTimestamp # Searches for Prefix that matches "X01_01_202508"
+# Specify the Search Criteria for Prefix that matches "X01_01_202508"
+prefixSearchCriteria = dataFilePrefix[0] + targetTimestamp 
 
 # Fetch All File Names (With Parent Folder Name Information) and Store it in List:
 btuFileList_RT = fetch_data.list_File_Names(parentFolderPath = pathDataFolder,
@@ -85,10 +86,111 @@ if DEBUG_FLAG == True:
    for file in btuFileList_RTH: print("- " + file)
    
 
-# Step 2: Load Data from Text File to a Dataframe (Try & Catch to Handle Abnormal Data)
+
+# Step 2: Load Data from Text File to a Raw Data into a Dataframe 
+
+
+print("\n" + "="*80)
+print("TESTING WITH SINGLE FILE")
+print("="*80)
+
+# Test with the first RT file
+if len(btuFileList_RT) > 0:
+    testFileInfo = btuFileList_RT[0]  # Get first file
+    
+    # Parse the file info: "meterName;fileName"
+    parts = testFileInfo.split(DELIMITER)
+    if len(parts) == 2:
+        meterName = parts[0]
+        fileName = parts[1]
+        filePath = os.path.join(pathDataFolder, meterName, fileName)
+        
+        print(f"\n📁 Testing with: {meterName} - {fileName}")
+        print(f"📂 Full path: {filePath}")
+        
+        try:
+            # Call the function and unpack both returns
+            rawData, diagnostics = fetch_data.read_Raw_Text_Data(
+                filePath=filePath,
+                encoding='utf-8',
+                healthCheck=True,
+                debugFlag=True  # Enable debug to see detailed output
+            )
+            
+            print("\n" + "="*80)
+            print("RESULTS")
+            print("="*80)
+            
+            # Show diagnostics
+            print("\n📊 Diagnostic Statistics:")
+            for key, value in diagnostics.items():
+                print(f"  {key}: {value}")
+            
+            # Show first few data points
+            print("\n📋 First 5 Data Points:")
+            for i, datapoint in enumerate(rawData[:5]):
+                print(f"  {i+1}. {datapoint}")
+            
+            # Show last few data points
+            print("\n📋 Last 5 Data Points:")
+            for i, datapoint in enumerate(rawData[-5:]):
+                print(f"  {i+1}. {datapoint}")
+            
+            # Convert to DataFrame to see structure
+            df_test = pd.DataFrame(rawData)
+            print("\n📊 DataFrame Info:")
+            print(df_test.info())
+            print("\n📊 DataFrame Head:")
+            print(df_test.head(10))
+            print("\n📊 DataFrame Tail:")
+            print(df_test.tail(10))
+            
+            # Check health distribution
+            print("\n🏥 Health Status Distribution:")
+            print(df_test['Health'].value_counts())
+            
+        except Exception as e:
+            print(f"❌ Error processing file: {e}")
+            import traceback
+            traceback.print_exc()
+else:
+    print("⚠️ No RT files found to test!")
 
 
 
+
+
+# RAW Data (Timestamp & Process Value)
+# 01.10.2025 00:00:00 6.0966177
+# 01.10.2025 00:01:00 5.730138
+
+# Raw Data Format (Faulty #start (Start of Faulty Data) & #stop (End of Faulty Data))
+"""
+#start (Indicates BTU Meter is Offline)
+15.08.2025 10:08:55 1.2908564
+15.08.2025 10:09:00 2.5826838
+.... 
+31.08.2025 00:24:00 4.3564544
+31.08.2025 00:25:00 4.2770133
+#stop (Indicates BTU Meter is Offline)
+"""
+# Raw Data Format (Healty Data Has No - 44640 Datapoints)
+"""
+01.10.2025 00:00:00 7763.3203  - First Data 
+01.10.2025 00:01:00 7763.422
+01.10.2025 00:02:00 7763.5176
+...
+31.10.2025 23:57:00 14842.312
+31.10.2025 23:58:00 14842.435
+31.10.2025 23:59:00 14842.554  - Last Data
+"""
+
+
+
+
+
+# Timestamp will need to be converted into ISO Form
+# Pandas Frame Output: Timestamp | J_B_82_10_27 Process Value | J_B_82_10_27 Health |  J_B_82_11_27 Process Value | J_B_82_11_27 Health | 
 
 
 # Step 2: Parse the Text Data (Date & Process Value) to a Data Frame 

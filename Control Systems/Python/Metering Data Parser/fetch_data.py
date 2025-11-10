@@ -77,4 +77,136 @@ def list_File_Names(parentFolderPath: str, childFolderNames: List[str], prefix: 
 
     return sorted(fileNames)
                
+# diagnostic_stats = {
+#     'meter': "J_B_82_11_21"
+#     'data': "X01_01_20251001_70_01_ACCBTUReadingS11MIN.txt"
+#     'total_rows': 44624,
+#     'healthy_rows': 16847,
+#     'faulty_rows': 27777,
+#     'faulty_percentage': 62.2,
+#     'failure_timestamps': ["2025-10-12 16:47:00"], # Faulty when #start appears
+#     'recovery_timestamps': []  # Empty if no recovery
+# }
 
+
+def read_Raw_Text_Data(filePath: str, encoding: str = 'utf-8', healthCheck: bool = True, debugFlag: bool = False) -> list:
+    """
+    Read raw BTU meter text data and parse into list of dictionaries.
+    Args:
+        filePath: Full path to the text file
+        encoding: File encoding (Default: 'utf-8')
+        healthCheck: Whether to check for #start/#stop health markers (default: True)
+        debugFlag: Whether to print debug information (default: False)
+        
+    Returns:
+        Tuple containing:
+        - rawData: List of dictionaries with keys: Timestamp, Value, Health
+        - diagnosticStatistics: Dictionary with parsing statistics
+    """
+    rawData = []
+    lineCount = 0
+    sensorHealth = True  # Default as Healthy until '#start' appears
+    timestampFailure = []
+    timestampRecovery = []
+    corruptedDataLines = []
+
+    # Get the Meter Name and File Name for Diagnostics
+    meterName = os.path.basename(os.path.dirname(filePath)) if os.path.dirname(filePath) else "Unknown"
+    fileName = os.path.basename(filePath)
+    
+    with open(filePath, 'r', encoding=encoding) as textFile:
+        
+        for line in textFile:
+
+            line = line.strip() 
+            lineCount += 1
+            
+            # Check the Health to Meters | Bypass Flag skips the Health Check
+            # '#start' indicates the Datapoint beyond this point is Meters that are Offline - Need to Double Confirm
+            # '#stop' indicates the Datapoint beyond this point is Meters that are Offline - Need to Double Confirm
+            if healthCheck: 
+                if line == '#start':
+                    sensorHealth = False  # Flag Datapoint as Unhealthy
+                    if debugFlag: print(f"Line {lineCount}: Sensor Unhealthy (#start)")
+                    continue
+                elif line == '#stop':
+                    sensorHealth = True   # Flag Datapoint as Healthy
+                    if debugFlag: print(f"Line {lineCount}: Sensor Healthy (#stop)")
+                    continue
+            
+            # Skip empty lines or other comments
+            if not line or line.startswith('#'):
+                continue
+            
+            # Raw Data Line: "01.10.2025 00:00:00 9006.741" - Seperated by Whitespaces (Data | Time | Process Value)
+            try:
+                dataSegment = line.split()  # Split the Data by by whitespaces
+                
+                # Extract the Timestamp of the Datapoint
+                if len(dataSegment) >= 2:    
+                    
+                    # Extract the Timestamp and convert into datetime (ISO format)
+                    dateString = dataSegment[0]                    # 01.10.2025
+                    timeString = dataSegment[1]                    # 00:00:00
+                    timestampString = f"{dateString} {timeString}" # 01.10.2025 00:00:00
+                    timestampISO = pd.to_datetime(timestampString, format="%d.%m.%Y %H:%M:%S")
+                    
+                    # Process the Process Value Data
+                    if len(dataSegment) == 3:
+                        processValue = float(dataSegment[2])  # 9006.741
+                    else:
+                        processValue = 0.0  # Default value if missing - 0.0
+                    
+                    # Track health state transitions
+                    if len(rawData) > 0:
+                        prevHealthStatus = rawData[-1]['Health']
+                        if prevHealthStatus and not sensorHealth:    # Transition: Healthy to Unhealthy
+                            timestampFailure.append(timestampISO.strftime("%Y-%m-%d %H:%M:%S"))
+                        elif not prevHealthStatus and sensorHealth:  # Transition: Unhealthy t Healthy 
+                            timestampRecovery.append(timestampISO.strftime("%Y-%m-%d %H:%M:%S"))
+                    elif not sensorHealth:
+                        # If the first datapoint is unhealthy
+                        timestampFailure.append(timestampISO.strftime("%Y-%m-%d %H:%M:%S"))
+
+                    rawData.append({
+                        'Timestamp': timestampISO,
+                        'Value': processValue,
+                        'Health': sensorHealth  
+                    })
+
+                else:
+                    if debugFlag: 
+                        print(f"Skipping line {lineCount}: Corrupted Data ({line})")
+                    corruptedDataLines.append(lineCount)
+                    
+            except Exception as e:
+                if debugFlag: 
+                    print(f"Skipping line {lineCount}: Corrupted Data ({line}) - Error: {e}")
+                corruptedDataLines.append(lineCount)
+
+    totalData = len(rawData)
+    totalHealthyData = sum(1 for row in rawData if row['Health'])
+    totalFaultyData = totalData - totalHealthyData
+    faultyDataPercentage = round((totalFaultyData/totalData * 100), 2) if totalData > 0 else 0.0
+
+    diagnosticStatistics = {
+        'meter': meterName,
+        'data': fileName,
+        'total_data': totalData,
+        'raw_line_cout': lineCount,
+        'healthy_data': totalHealthyData,
+        'faulty_data': totalFaultyData,
+        'faulty_data_percentage': faultyDataPercentage,
+        'failure_timestamps': timestampFailure,
+        'recovery_timestamps': timestampRecovery,
+        'corrupted_data_lines': corruptedDataLines
+    }
+    
+    if debugFlag: 
+        print(f"\nNumber of Datapoints: {totalData} (Raw Number of Lines: {lineCount})")
+        print(f"\nTotal Healthy Datapoints: {totalHealthyData}  |  Total Unhealthy Datapoints: {totalFaultyData}")
+        print(f"\nFaulty Data Percentange: {faultyDataPercentage}  |  Total Corrupted Data Lines: {corruptedDataLines}")
+        print(f"\nSensor Failure Time: {timestampFailure}")
+        print(f"\nSensor Recovery Time: {timestampRecovery}")
+    
+    return rawData, diagnosticStatistics
