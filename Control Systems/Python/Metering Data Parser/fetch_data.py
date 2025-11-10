@@ -36,11 +36,11 @@ def list_Folder_Names(folderPath: str, namePrefix: List[str], debugFlag: bool) -
                 if folder.startswith(tuple(namePrefix)): 
                    folderNames.append(folder)   
         if debugFlag == True: 
-            print(f'Found {len(folderNames)} BTU Meters:')
+            print(f'\nFound {len(folderNames)} BTU Meters:')
             for name in folderNames: 
                 print(f"- {name}")
     else: 
-        print(f"Error:No Data folder found in {folderPath}")
+        print(f"\nError:No Data folder found in {folderPath}")
 
     return sorted(folderNames)  
 
@@ -205,3 +205,25 @@ def read_Raw_Text_Data(filePath: str, encoding: str = 'utf-8', healthCheck: bool
         print(f"\nSensor Recovery Time: {timestampRecovery}")
     
     return rawData, diagnosticStatistics
+
+
+# List the Blocks that the Meters exist in (Use Set - Unqiue)
+# Extract block names from meter names ("J_B_82_10_27" to "J_B_82")
+def list_Meter_Blocks(nameList): 
+    """
+    Extract unique block names from meter names.
+    Args:
+        nameList: List of meter names (e.g., ["J_B_82_10_27", "J_B_82_11_28"])
+    Returns:
+        Sorted list of unique block names (e.g., ["Block 82", "Block 83"])
+    """
+    blockList = []  
+
+    for name in nameList:
+        parts = name.split('_')
+        # Take Third part ["J", "B", "82"] from "J_B_82_10_27"
+        blockNumber = str(parts[2])
+
+        blockList.append(blockNumber)
+
+    return sorted(list(set(blockList)))
