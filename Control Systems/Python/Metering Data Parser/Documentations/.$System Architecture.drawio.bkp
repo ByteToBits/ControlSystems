@@ -1,0 +1,52 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
+  <diagram name="Page-1" id="ufhv2L7a8RYXlIBscZMH">
+    <mxGraphModel dx="625" dy="383" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-4" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#001933;strokeColor=none;arcSize=22;" vertex="1" parent="1">
+          <mxGeometry x="11" y="714.22" width="120" height="29.78" as="geometry" />
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-5" value="&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;Raw Data&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="31" y="719.1099999999999" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#001933;strokeColor=none;arcSize=5;" vertex="1" parent="1">
+          <mxGeometry x="11" y="747" width="120" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-8" value="&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;.txt File&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="31" y="778.4999999999999" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-9" value="" style="endArrow=block;html=1;rounded=0;strokeWidth=5;strokeColor=#000000;endFill=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="140" y="770" as="sourcePoint" />
+            <mxPoint x="284" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-10" value="&lt;b&gt;&lt;font color=&quot;#000000&quot; style=&quot;font-size: 15px;&quot;&gt;Extract Raw Data&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="160" y="727.89" width="80" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#001933;strokeColor=none;arcSize=22;" vertex="1" parent="1">
+          <mxGeometry x="291" y="714.22" width="120" height="29.78" as="geometry" />
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-12" value="&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;Raw Data&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="311" y="719.1099999999999" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-13" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#001933;strokeColor=none;arcSize=5;" vertex="1" parent="1">
+          <mxGeometry x="291" y="747" width="120" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-14" value="&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;.txt File&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="311" y="778.4999999999999" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-15" value="" style="endArrow=block;html=1;rounded=0;strokeWidth=5;strokeColor=#000000;endFill=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="420" y="770" as="sourcePoint" />
+            <mxPoint x="560" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vw3DEnfelJq8JoqfnvwD-16" value="&lt;b&gt;&lt;font color=&quot;#000000&quot; style=&quot;font-size: 15px;&quot;&gt;Extract Raw Data&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="440" y="727.89" width="80" height="19.11" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

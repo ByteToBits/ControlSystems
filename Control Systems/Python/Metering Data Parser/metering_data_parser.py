@@ -60,7 +60,10 @@ dataFilePostfix = ["BTUREADINGS11MIN.txt", "ACCBTUReadingS11MIN.txt"]
 diagnoseStatsRegisters = []
 blockDataFrames  = {}  # Dictionary (Key-Value Pair: Key - Block 22: Data Frame)
 
-# Step 1: Fetch all the File and Folder Information 
+
+
+
+# Step 1: Fetch all the File and Folder Information -------------------------------------------------------------------------------------- Step 1
 print("\nStep 1: Fetch all the File and Folder Information")
 
 # Fetch All Folder Name of Each BTU Meter and Store it in List
@@ -101,10 +104,10 @@ print("\nStep 1: Completed...\n")
 
 
 
-# Step 2: Load Data from Text File to a Raw Data into a Dataframe 
+# Step 2: Load Data from Text File to a Raw Data into a Dataframe ------------------------------------------------------------------------------ Step 2
 print("\nStep 2: Load Data from Text File to a Raw Data into a Dataframe ")
 
-# Initialize the Data Frame with Timestamps & Default Values
+# Initialize the Data Frame with Timestamps & Default Values for Missing Data(Filter Data)
 for block in btuBlockList: 
    blockDataFrames[block] = parse_data.initialize_Block_DataFrame(month=targetMonth, year=targetYear, blockNumber=block, meterList=btuNameList) 
 
@@ -125,9 +128,39 @@ if DEBUG_FLAG:
 print("\nStep 2: Completed...\n")
 
 
-# Step 3: Process the Data into Required Output
+
+# Step 3: Analyze and Process the Data into Required Output ------------------------------------------------------------------------------------- Step 3
 
 
+
+
+# Meter 01 RT:
+#  {   
+#      RT: {
+#          Totalized_Value: 
+#          Number_of_DataPoints: 
+#          Average_Value:
+#          Peak_Value:
+#          Peak_Timestamp:
+#          Minimum_Value:
+#          Operating_Hours: (hours when RT > 0)
+#          Number_of_Healthy_DataPoints:
+#          Number_of_Faulty_Datapoints:
+#          Data_Completeness_Percentage:
+#      }, 
+#      RTH: {
+#          First_Healthy_RTH_ProcessValue: 
+#          First_Healthy_RTH_Timestamp: 
+#          Last_Healthy_RTH_ProcessValue: 
+#          Last_Healthy_RTH_Timestamp: 
+#          Totalized_Value: (Last - First)
+#          Totalized_Value_Unfiltered: (Just Sum Rergardless)
+#          Number_of_DataPoints: 
+#          Number_of_Healthy_DataPoints:
+#          Number_of_Faulty_Datapoints:
+#          Data_Completeness_Percentage:
+#      },
+# }
 
 
 
