@@ -48,13 +48,13 @@ def write_Analysis_Report(blockDataFrames: dict, blockList: list, meterList: lis
             block_rth_stats = analyze_data_module.analyze_Block_RTH_Data(blockDataFrames[block], meterList, block)
             
             # Write block summary
-            _write_Block_Statistics(report_file, block, block_rt_stats, block_rth_stats)
+            write_Block_Statistics(report_file, block, block_rt_stats, block_rth_stats)
             
             # Write individual meter statistics
             for meter in meters_in_block:
                 rt_stats = analyze_data_module.analyze_Meter_RT_Data(blockDataFrames[block], meter)
                 rth_stats = analyze_data_module.analyze_Meter_RTH_Data(blockDataFrames[block], meter)
-                _write_Meter_Statistics(report_file, meter, rt_stats, rth_stats)
+                # write_Meter_Statistics(report_file, meter, rt_stats, rth_stats)
         
         # Write footer
         report_file.write("\n" + "="*80 + "\n")
@@ -65,7 +65,7 @@ def write_Analysis_Report(blockDataFrames: dict, blockList: list, meterList: lis
     return full_output_path
 
 
-def _write_Meter_Statistics(file, meter_name: str, rt_stats: dict, rth_stats: dict):
+def write_Meter_Statistics(file, meter_name: str, rt_stats: dict, rth_stats: dict):
     """Write meter statistics to file (internal helper)."""
     
     file.write(f"\n{'='*80}\n")
@@ -92,7 +92,7 @@ def _write_Meter_Statistics(file, meter_name: str, rt_stats: dict, rth_stats: di
     file.write(f"  Data Completeness:      {rth_stats['Data_Completeness_Percentage']:>15,.2f}%\n")
 
 
-def _write_Block_Statistics(file, block_number: str, block_rt_stats: dict, block_rth_stats: dict):
+def write_Block_Statistics(file, block_number: str, block_rt_stats: dict, block_rth_stats: dict):
     """Write block statistics to file (internal helper)."""
     
     file.write(f"\n{'='*80}\n")

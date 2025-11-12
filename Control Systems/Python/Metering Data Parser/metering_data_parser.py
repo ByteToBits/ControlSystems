@@ -25,7 +25,7 @@ import export_data
 # Initial: Initialize Data
 targetMonth = '10'
 targetYear = '2025'
-pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\PDD_BTUmeter' # Absolute Path to Working Directory
+pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data' # Absolute Path to Working Directory
 pathOutputFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\Metering Summary Report'
 
 MONTHS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
@@ -130,7 +130,7 @@ for block in btuBlockList:
     meters_in_block = [meter for meter in btuNameList if meter.split('_')[2] == block]
     
     # Analyze block-level statistics
-    block_rt_stats = analyze_data.analyze_Block_RT_Data(blockDataFrames[block], btuNameList, block)
+    block_rt_stats = analyze_data.analyze_Block_RT_Data(blockDataFrames[block], btuNameList, block, includeFaultyData = True)
     block_rth_stats = analyze_data.analyze_Block_RTH_Data(blockDataFrames[block], btuNameList, block)
     
     # Print block summary
@@ -138,9 +138,9 @@ for block in btuBlockList:
     
     # Print individual meter statistics for this block
     for meter in meters_in_block:
-        rt_stats = analyze_data.analyze_Meter_RT_Data(blockDataFrames[block], meter)
+        rt_stats = analyze_data.analyze_Meter_RT_Data(blockDataFrames[block], meter, includeFaultyData = True)
         rth_stats = analyze_data.analyze_Meter_RTH_Data(blockDataFrames[block], meter)
-        analyze_data.print_Meter_Statistics(meter, rt_stats, rth_stats)
+        # analyze_data.print_Meter_Statistics(meter, rt_stats, rth_stats)
 
 
 

@@ -12,12 +12,13 @@
 
 import pandas as pd
 
-def analyze_Meter_RT_Data(blockDataFrame: pd.DataFrame, meterName: str) -> dict:
+def analyze_Meter_RT_Data(blockDataFrame: pd.DataFrame, meterName: str, includeFaultyData: bool = True) -> dict:
     """
     Process RT meter data and extract statistics for 1 Meter. 
     Args:
         blockDataFrame: DataFrame containing meter data
         meterName: Full meter name (e.g., 'J_B_82_10_27')
+        includeFaultyData: If True, include faulty data (RT <= 0) in summation and averaging
     Returns:
         Dictionary containing RT statistics
     """
@@ -26,9 +27,15 @@ def analyze_Meter_RT_Data(blockDataFrame: pd.DataFrame, meterName: str) -> dict:
     rt_Data = blockDataFrame[rt_Column]
     rt_healthy = rt_Data[rt_Data > 0]
     
+    # Determine which data to use for calculations
+    if includeFaultyData:
+        rt_calc_data = rt_Data
+    else:
+        rt_calc_data = rt_healthy
+    
     # Average Value of the RT Data
-    if not rt_healthy.empty:
-        average_value = rt_healthy.mean()
+    if not rt_calc_data.empty:
+        average_value = rt_calc_data.mean()
     else:
         average_value = 0.0
     
@@ -44,7 +51,7 @@ def analyze_Meter_RT_Data(blockDataFrame: pd.DataFrame, meterName: str) -> dict:
     data_completeness = (healthy_datapoints / total_datapoints * 100) if total_datapoints > 0 else 0.0
     
     analyzed_MeterData_RT = {
-        'Totalized_Value': rt_healthy.sum(),
+        'Totalized_Value': rt_calc_data.sum(),
         'Number_of_DataPoints': total_datapoints,
         'Average_Value': average_value,
         'Operating_Hours': operating_hours,
@@ -56,13 +63,14 @@ def analyze_Meter_RT_Data(blockDataFrame: pd.DataFrame, meterName: str) -> dict:
     return analyzed_MeterData_RT
 
 
-def analyze_Block_RT_Data(blockDataFrame: pd.DataFrame, meterList: list, blockNumber: str) -> dict:
+def analyze_Block_RT_Data(blockDataFrame: pd.DataFrame, meterList: list, blockNumber: str, includeFaultyData: bool = True) -> dict:
     """
     Process and totalize RT data for all meters in a block.
     Args:
         blockDataFrame: DataFrame containing all meter data for the block
         meterList: List of all meter names
         blockNumber: Block number ('82')
+        includeFaultyData: If True, include faulty data (RT <= 0) in summation and averaging
     Returns:
         Dictionary containing block-level RT statistics
     """
@@ -80,7 +88,7 @@ def analyze_Block_RT_Data(blockDataFrame: pd.DataFrame, meterList: list, blockNu
     
     # Process each meter and aggregate
     for meter in meters_in_block:
-        meter_stats = analyze_Meter_RT_Data(blockDataFrame, meter)
+        meter_stats = analyze_Meter_RT_Data(blockDataFrame, meter, includeFaultyData)
         meter_statistics[meter] = meter_stats
         
         # Aggregate totals
@@ -90,8 +98,13 @@ def analyze_Block_RT_Data(blockDataFrame: pd.DataFrame, meterList: list, blockNu
         total_faulty_datapoints += meter_stats['Number_of_Faulty_DataPoints']
         total_datapoints += meter_stats['Number_of_DataPoints']
     
-    # Calculate block-level metrics
-    block_average = total_totalized / total_healthy_datapoints if total_healthy_datapoints > 0 else 0.0
+    # Calculate block-level metrics based on includeFaultyData flag
+    if includeFaultyData:
+        datapoints_for_avg = total_datapoints
+    else:
+        datapoints_for_avg = total_healthy_datapoints
+    
+    block_average = total_totalized / datapoints_for_avg if datapoints_for_avg > 0 else 0.0
     block_data_completeness = (total_healthy_datapoints / total_datapoints * 100) if total_datapoints > 0 else 0.0
     
     analyzed_BlockData_RT = {
