@@ -1,3 +1,15 @@
+# Project: Metering Data Parser
+# File Type: Function File
+
+# Description: parse Data
+# Contains Functions that Initializes a Data Frame and Pass Raw Data into Data Frame 
+# (Where Missing Data is Defaulted to 0.0 where it is asume Meter is Offline)
+
+# Aurthor: Tristan Sim
+# Date: 11/11/2025
+# Version: 1.01
+# Changelog: 
+
 import pandas as pd
 from datetime import datetime
 from calendar import monthrange
@@ -70,6 +82,8 @@ def populate_Meter_DataFrame(fileList: List[str], blockDataFrames: dict, diagnos
     """
     
     for i, file in enumerate(fileList):
+
+        print(f"\nProcessing File: {file}")
         
         parts = file.split(delimiter)
         meterName = parts[0]

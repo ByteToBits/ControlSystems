@@ -9,35 +9,23 @@
 # Version: 1.01
 # Changelog: 
 
-# Fetch Data From File (Meters Serve Individual Blocks)
-
-# Monthly BTU Data per Block
-# Purpoaw (Billing)
-# B22 BTU 1 RTH = Last Data - First Data = 14842.554 - 7763.3203 = 7,079.2337 RTH
-# B22 BTU 2 RTH = Last Data - First Data = 14842.554 - 7763.3203 = 7,079.2337 RTH
-# B22 BTU 3 RTH = Last Data - First Data = 14842.554 - 7763.3203 = 7,079.2337 RTH
-# BTU B22 Total = B22 BTU 1 RTH + B22 BTU 2 RTH + B22 BTU 3 RTH = 7,079.2337 + 7,079.2337 + 7,079.2337 = 21,237.7011 RTH
-
-# Totalize RT
-# Average RT
-# Purpose (Knowledge?)
-
 
 # Input Dependencies: Execution Month & Year (Variable) - Default (System Clock subtracted to Previous Months)
 import pandas as pd
 import numpy as np
+import openpyxl
 import time
-# import openpyxl
-import os
 
 # Import Custom Library
 import fetch_data
 import parse_data
+import analyze_data
+import export_data
 
 # Initial: Initialize Data
 targetMonth = '10'
 targetYear = '2025'
-pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data' # Absolute Path to Working Directory
+pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\PDD_BTUmeter' # Absolute Path to Working Directory
 pathOutputFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\Metering Summary Report'
 
 MONTHS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
@@ -60,6 +48,8 @@ dataFilePostfix = ["BTUREADINGS11MIN.txt", "ACCBTUReadingS11MIN.txt"]
 diagnoseStatsRegisters = []
 blockDataFrames  = {}  # Dictionary (Key-Value Pair: Key - Block 22: Data Frame)
 
+# Track Python Runtime
+start_time = time.time()
 
 
 
@@ -131,41 +121,48 @@ print("\nStep 2: Completed...\n")
 
 # Step 3: Analyze and Process the Data into Required Output ------------------------------------------------------------------------------------- Step 3
 
+print("\nStep 3: Analyze and Process the Data into Required Output...")
+
+# Process all blocks and meters
+for block in btuBlockList:
+    
+    # Find all meters in this block
+    meters_in_block = [meter for meter in btuNameList if meter.split('_')[2] == block]
+    
+    # Analyze block-level statistics
+    block_rt_stats = analyze_data.analyze_Block_RT_Data(blockDataFrames[block], btuNameList, block)
+    block_rth_stats = analyze_data.analyze_Block_RTH_Data(blockDataFrames[block], btuNameList, block)
+    
+    # Print block summary
+    analyze_data.print_Block_Statistics(block, block_rt_stats, block_rth_stats)
+    
+    # Print individual meter statistics for this block
+    for meter in meters_in_block:
+        rt_stats = analyze_data.analyze_Meter_RT_Data(blockDataFrames[block], meter)
+        rth_stats = analyze_data.analyze_Meter_RTH_Data(blockDataFrames[block], meter)
+        analyze_data.print_Meter_Statistics(meter, rt_stats, rth_stats)
 
 
 
-# Meter 01 RT:
-#  {   
-#      RT: {
-#          Totalized_Value: 
-#          Number_of_DataPoints: 
-#          Average_Value:
-#          Peak_Value:
-#          Peak_Timestamp:
-#          Minimum_Value:
-#          Operating_Hours: (hours when RT > 0)
-#          Number_of_Healthy_DataPoints:
-#          Number_of_Faulty_Datapoints:
-#          Data_Completeness_Percentage:
-#      }, 
-#      RTH: {
-#          First_Healthy_RTH_ProcessValue: 
-#          First_Healthy_RTH_Timestamp: 
-#          Last_Healthy_RTH_ProcessValue: 
-#          Last_Healthy_RTH_Timestamp: 
-#          Totalized_Value: (Last - First)
-#          Totalized_Value_Unfiltered: (Just Sum Rergardless)
-#          Number_of_DataPoints: 
-#          Number_of_Healthy_DataPoints:
-#          Number_of_Faulty_Datapoints:
-#          Data_Completeness_Percentage:
-#      },
-# }
+# Step 4: Save a Data into an Excel File (Named by Month) - Alternative Exports are .txt file or csv
+print("\nStep 4: Save a Data into an Excel File (Named by Month)...")
 
+# Export to text file
+export_data.write_Analysis_Report(blockDataFrames, btuBlockList, btuNameList, pathOutputFolder, targetMonth, targetYear, analyze_data)
 
+# Export DataFrames to Excel
+export_data.write_DataFrames_to_Excel(blockDataFrames, pathOutputFolder, targetMonth, targetYear)
 
-# Step 5: Save a Data into an Excel File (Named by Month) - Alternative Exports are .txt file or csv
+# Record the Python Script Runtime
+end_time = time.time()
+runtime = end_time - start_time
 
+# Export diagnostic log
+export_data.write_Diagnostic_Log(diagnoseStatsRegisters, pathOutputFolder, targetMonth, targetYear, runtime)
+
+print("\nStep 4: Completed...\n")
+
+print(f"\nTotal Runtime: {runtime:.2f} seconds ({runtime/60:.2f} minutes)\n")
 
 # Post-Task
 # Compiled into Execute / Use Raw Py Script (Requires Python Runtime on Host)
