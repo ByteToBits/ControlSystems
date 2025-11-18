@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.1 Chrome/128.0.6613.186 Electron/32.2.6 Safari/537.36" version="25.0.1">
   <diagram name="Page-1" id="ufhv2L7a8RYXlIBscZMH">
-    <mxGraphModel dx="2603" dy="1595" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1221" dy="871" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -987,17 +987,101 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="eky-HRu1Xk89hfmGLB0u-5" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=default;arcSize=23;fontColor=#000000;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="eky-HRu1Xk89hfmGLB0u-5" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=default;arcSize=23;fontColor=#000000;strokeWidth=2;" parent="1" vertex="1">
           <mxGeometry x="200" y="233.58" width="98" height="24.42" as="geometry" />
         </mxCell>
-        <mxCell id="eky-HRu1Xk89hfmGLB0u-6" value="&lt;font color=&quot;#000000&quot;&gt;&lt;b style=&quot;&quot;&gt;J_B_82_01_69&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+        <mxCell id="eky-HRu1Xk89hfmGLB0u-6" value="&lt;font color=&quot;#000000&quot;&gt;&lt;b style=&quot;&quot;&gt;J_B_82_01_69&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" parent="1" vertex="1">
           <mxGeometry x="208.71" y="239.8" width="81.29" height="11.98" as="geometry" />
         </mxCell>
-        <mxCell id="eky-HRu1Xk89hfmGLB0u-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=default;arcSize=23;fontColor=#000000;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="eky-HRu1Xk89hfmGLB0u-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=default;arcSize=23;fontColor=#000000;strokeWidth=2;" parent="1" vertex="1">
           <mxGeometry x="511.95" y="232.58" width="98" height="24.42" as="geometry" />
         </mxCell>
-        <mxCell id="eky-HRu1Xk89hfmGLB0u-8" value="&lt;font color=&quot;#000000&quot;&gt;&lt;b&gt;Raw Data.txt&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+        <mxCell id="eky-HRu1Xk89hfmGLB0u-8" value="&lt;font color=&quot;#000000&quot;&gt;&lt;b&gt;Raw Data.txt&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" parent="1" vertex="1">
           <mxGeometry x="520.66" y="238.8" width="81.29" height="11.98" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-1" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Process 1: Load RT&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1740" y="151.22" width="180" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-2" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;For meter in Meters:&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1775" y="209" width="195" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-4" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Save to Excel Sheet 3&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1775" y="406" width="180" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-6" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Merge Raw Data Frame to Main Data Frame&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1802.5" y="289.31" width="317.5" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-12" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Save Only Important Statistics&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1775" y="465.66999999999996" width="235" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-15" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Purge Data Frame from Memory&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1775" y="497.99999999999994" width="235" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-18" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Process Core 1&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1757" y="112.70999999999992" width="160" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-19" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Create &amp;amp; Open Excel Workbook&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1775" y="343.89" width="240" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-20" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Write Data Frame to Excel&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1775" y="375.67" width="220" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-21" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Close Workbook&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1775" y="435" width="180" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-22" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Initialize Data Frame&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1771" y="180.64" width="159" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-44" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Read Raw Data&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1802.5" y="236.23" width="140" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-45" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Convert Raw Data into Panda Frame&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1802.5" y="262.2" width="287.5" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-57" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Populate NAN / &amp;lt; 0.0 with 0.0&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1802.5" y="316.89" width="317.5" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-58" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Process 2: Load RTH&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1746" y="557.18" width="180" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-59" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;For meter in Meters:&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1781" y="614.96" width="195" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-60" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Save to Excel Sheet 3&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1781" y="811.96" width="180" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-61" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Merge Raw Data Frame to Main Data Frame&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1808.5" y="695.27" width="317.5" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-62" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Save Only Important Statistics&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1781" y="871.6299999999999" width="235" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-63" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Purge Data Frame from Memory&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1781" y="903.9599999999999" width="235" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-64" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Create &amp;amp; Open Excel Workbook&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1781" y="749.8499999999999" width="240" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-65" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Write Data Frame to Excel&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1781" y="781.63" width="220" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-66" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Close Workbook&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1781" y="840.96" width="180" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-67" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Initialize Data Frame&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1777" y="586.5999999999999" width="159" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-68" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Read Raw Data&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1808.5" y="642.1899999999999" width="140" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-69" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Convert Raw Data into Panda Frame&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1808.5" y="668.16" width="287.5" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-70" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Populate NAN / &amp;lt; 0.0 with 0.0&amp;nbsp;&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1808.5" y="722.8499999999999" width="317.5" height="19.11" as="geometry" />
+        </mxCell>
+        <mxCell id="wbc_gYaMtPtex9_t27hg-71" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Generate District Data&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1761" y="944.0699999999999" width="235" height="19.11" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
