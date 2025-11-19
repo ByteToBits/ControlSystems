@@ -40,15 +40,14 @@ namespace MeteringDataParser
 
         static void Main(string[] args)
         {   
-            // Process 1: Fetch Data from Raw Data Files
-            Console.WriteLine($"\nProcess 1: Fetch Data from Raw Data Files -------------------------------------------------------------------------- ");
-            Console.WriteLine($"\nTarget Month: {targetMonth}/{targetYear}");
+            // Process 1: Fetch Available Data Folders
+            Console.WriteLine($"\nProcess 1: Fetch Available Data Folders ----------------------------------------------------------------------------- ");
+            Console.WriteLine($"\nTarget Processing Month: {targetMonth}    |   Target Processing Year: {targetYear}");
             
-            // Listing all Meter Folder Names
+            // Listing all Meter Folder Names & Block Numbers
             List<string> meterNameList = FetchDataService.ListFolderNames(folderPath: PATH_DATA_FOLDER, namePrefixes: meterNamePrefix, DEBUG_FLAG);
-            
-            // List Block Numbers
             List<string> discoveredBlockList = FetchDataService.ListMeterBlocks(meterNameList);
+
             if (DEBUG_FLAG)
             {
                 Console.WriteLine($"\n{discoveredBlockList.Count} Building Blocks Discovered: ");
@@ -57,11 +56,10 @@ namespace MeteringDataParser
             
             // Build search criteria for file names
             string prefixSearchCriteria = dataFilePrefix[0] + targetYear + targetMonth;
-            Console.WriteLine($"\nSearching for files with prefix: '{prefixSearchCriteria}'");
+            // Console.WriteLine($"\nSearching for files with prefix: '{prefixSearchCriteria}'");
 
             // Create a List with all the RT File Data
-            Console.WriteLine("\nCreating a List with all the RT File Names...");
-            List<string> btuFileList_RT = FetchDataService.ListFileNames(
+            List<string> meterFileList_RT = FetchDataService.ListFileNames(
                 parentFolderPath: PATH_DATA_FOLDER,
                 childFolderNames: meterNameList,
                 prefix: prefixSearchCriteria,
@@ -70,18 +68,40 @@ namespace MeteringDataParser
                 debugFlag: DEBUG_FLAG
             );
 
-             // Create a List with all the RTH (Accumulated) File Data
-            Console.WriteLine("\nCreating a List with all the RTH (Accumulated) File Names...");
-            List<string> btuFileList_RTH = FetchDataService.ListFileNames(
+            // Create a List with all the RTH (Accumulated) File Data
+            List<string> meterFileList_RTH = FetchDataService.ListFileNames(
                 parentFolderPath: PATH_DATA_FOLDER,
                 childFolderNames: meterNameList,
                 prefix: prefixSearchCriteria,
                 postfix: dataFilePostfix[1],
                 delimiter: DELIMITER,
                 debugFlag: DEBUG_FLAG
-            );
+            );~
 
-            Console.WriteLine($"\nProcess 1: Completed ----------------------------------------------------------------------------------------------- ");
+            Console.WriteLine($"\nNumber of RT Files Retrieved: {meterFileList_RT.Count}   |   Number of RTH Files Retrieved: {meterFileList_RT.Count}");
+
+            Console.WriteLine($"\nProcess 1: Completed ------------------------------------------------------------------------------------------------- ");
+
+
+
+
+
+            // Process 2: Load Data from Text File Parse into an Array (Clean Data)
+            Console.WriteLine($"\n\nProcess 2: Load Data from Text File and Parse into an Array (Clean Data) ---------------------------------------------- ");
+
+
+
+
+            Console.WriteLine($"\nProcess 2: Completed ------------------------------------------------------------------------------------------------- ");
+
+            // Step 3: Analyze and Process the Data into Required Output 
+            Console.WriteLine($"\n\nProcess 3: Analyze and Process the Data into Required Output --------------------------------------------------------- ");
+            Console.WriteLine($"\nProcess 3: Completed ------------------------------------------------------------------------------------------------- ");
+
+            // Step 4: Save a Data into invidual Excel Files by Blocks (Sheet: Summary, RT, RTH) 'Block_88_Oct_2025'
+            Console.WriteLine($"\n\nProcess 4: Save a Data into invidual Excel Files by Blocks ----------------------------------------------------------- ");
+            Console.WriteLine($"\nProcess 4: Completed ------------------------------------------------------------------------------------------------- ");
+
         }
 
     }

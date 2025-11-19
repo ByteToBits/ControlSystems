@@ -64,7 +64,7 @@ namespace MeteringDataParser.Services
                 folderNames.Sort(); // Sort the Contents of the List
                 if (debugFlag)
                 {
-                    Console.WriteLine($"\nDiscovered {folderNames.Count} Metering Data Folders");
+                    Console.WriteLine($"\nMetering Data Folders Discovered: {folderNames.Count}");
                 }
             }
             catch (UnauthorizedAccessException)
