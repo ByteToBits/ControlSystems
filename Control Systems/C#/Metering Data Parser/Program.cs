@@ -89,7 +89,11 @@ namespace MeteringDataParser
             // Process 2: Load Data from Text File Parse into an Array (Clean Data)
             Console.WriteLine($"\n\nProcess 2: Load Data from Text File and Parse into an Array (Clean Data) ---------------------------------------------- ");
 
+            
 
+
+
+            
 
 
             Console.WriteLine($"\nProcess 2: Completed ------------------------------------------------------------------------------------------------- ");

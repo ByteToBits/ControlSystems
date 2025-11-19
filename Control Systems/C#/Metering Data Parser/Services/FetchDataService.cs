@@ -75,7 +75,6 @@ namespace MeteringDataParser.Services
             {
                 Console.WriteLine($"Error: Function (FetchDataService.ListFolderNames) Exception - {ex.Message} ");
             }
-
             return folderNames;
         }
 
@@ -124,7 +123,6 @@ namespace MeteringDataParser.Services
             {
                 Console.WriteLine($"Error: Function (FetchDataService.ListFileNames) Exception - {ex.Message} ");
             }
-
             return fileNames;
         }
 
@@ -137,13 +135,11 @@ namespace MeteringDataParser.Services
         public static List<string> ListMeterBlocks(List<string> nameList)
         {
             var blockList = new List<string>();
-
             foreach (string name in nameList)
             {
                 // Split the name by underscore
                 // Example: "J_B_82_10_27" → ["J", "B", "82", "10", "27"]
                 string[] parts = name.Split('_');     
-                
                 if (parts.Length >= 3) // Verify that there is 3 Parts
                 {          
                     string blockNumber = parts[2];  // Block Number is the 3rd Element in the Array
@@ -154,7 +150,6 @@ namespace MeteringDataParser.Services
                     }
                 }
             }
-
             return blockList;
         }
 
