@@ -3,6 +3,8 @@
 import os
 from datetime import datetime
 import pandas as pd
+from openpyxl.styles import Font, Alignment, PatternFill
+import openpyxl
 
 def write_Analysis_Report(blockDataFrames: dict, blockList: list, meterList: list, 
                           outputPath: str, targetMonth: str, targetYear: str,
@@ -144,6 +146,46 @@ def write_DataFrames_to_Excel(blockDataFrames: dict, outputPath: str, targetMont
             
             # Write DataFrame starting from row 2 (leave row 1 blank)
             df.to_excel(writer, sheet_name=sheet_name, index=False, startrow=1)
+        
+            # General Parameters to Customize Worksheet Design
+            worksheet = writer.sheets[sheet_name]
+            alignment = Alignment(horizontal="center", vertical="center") # Universal Text Alignment
+            fill = PatternFill(start_color="DAEEF3", end_color="DAEEF3", fill_type="solid")  # Light Blue
+            worksheetColumnWidth = 22.5
+
+            # Specific Parameters for Header
+            header_fill = PatternFill(start_color="00153E", end_color="00153E", fill_type="solid")  # Navy blue
+            header_font = Font(bold=True, color="FFFFFF")                                           # White, bold
+
+            # Specific Parameters for Computed Data
+            computed_fill = PatternFill(start_color="B8CCE4", end_color="B8CCE4", fill_type="solid")  # Light Green
+
+            # Set the column widths
+            for i in range(1, worksheet.max_column + 1):
+                worksheet.column_dimensions[openpyxl.utils.get_column_letter(i)].width = worksheetColumnWidth
+            
+            # Customize Sheet Header
+            for cell in worksheet[2]:  # Row 2 is the header
+                cell.fill = header_fill
+                cell.font = header_font
+                cell.alignment = alignment
+
+            # Format ALL data cells (excluding header row 2)
+            for row in worksheet.iter_rows(min_row=3, max_row=worksheet.max_row):
+                for cell in row:
+                    cell.fill = fill  # Light blue
+                    cell.alignment = alignment
+
+            # Then apply computed column formatting on top (overwrites with bold)
+            computed_columns = ['D', 'E', 'F', 'G', 'H']
+            for col_letter in computed_columns:
+                for cell in worksheet[col_letter]:
+                    if cell.row > 2:
+                        cell.fill = computed_fill
+                        cell.alignment = alignment
+                
+
+
     
     print(f"\nDataFrames exported to Excel: {full_output_path}")
     return full_output_path

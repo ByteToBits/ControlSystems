@@ -28,7 +28,7 @@ import export_data
 # Initial: Initialize Data
 targetMonth = '10'
 targetYear = '2025'
-pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data' # Absolute Path to Working Directory
+pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\PDD_BTUmeter' # Absolute Path to Working Directory
 pathOutputFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\Metering Summary Report'
 pathMeterFilterFile = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\filter\FilterList_CWSA.xlsx' # List of Meters to Filter
 
@@ -160,12 +160,16 @@ for block in btuBlockList:
     sum_CWSA_RT = blockDataFrames[block][dataColumns_CWSA_RT].sum(axis=1) if dataColumns_CWSA_RT else 0.0
     sum_Retail_RT = blockDataFrames[block][dataColumns_Retail_RT].sum(axis=1) if dataColumns_Retail_RT else 0.0
 
-    # Insert Columnbs after the Time column (Index 3)
-    blockDataFrames[block].insert(3, f'{block} Total RT Sum', sum_Total_RT)
-    blockDataFrames[block].insert(4, f'{block} CWSA RT Sum', sum_CWSA_RT)
-    blockDataFrames[block].insert(5, f'{block} Retail RT Sum', sum_Retail_RT)
+    # Insert Columns after the Time column (Index 3)
+    blockDataFrames[block].insert(3, f'Block {block} Total RT Sum', round(sum_Total_RT, 3))
+    blockDataFrames[block].insert(4, f'Block {block} CWSA RT Sum', round(sum_CWSA_RT,3))
+    blockDataFrames[block].insert(5, f'Block {block} Retail RT Sum', round(sum_Retail_RT,3))
+    blockDataFrames[block].insert(6, f'Block {block} Total Meters', len(metersInBlock))
+    blockDataFrames[block].insert(7, f'Block {block} CWSA Meters', len(dataColumns_CWSA_RT))
 
 print("Step 2.5: Completed...\n")
+
+
 
 # Step 3: Analyze and Process the Data into Required Output ------------------------------------------------------------------------------------- Step 3
 
