@@ -26,7 +26,7 @@ import analyze_data
 import export_data
 
 # Initial: Initialize Data
-targetMonth = '10'
+targetMonth = '04'
 targetYear = '2025'
 pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\PDD_BTUmeter' # Absolute Path to Working Directory
 pathOutputFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\Metering Summary Report'
@@ -35,7 +35,7 @@ pathMeterFilterFile = r'C:\Repository\ControlSystems\Control Systems\Python\Mete
 MONTHS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 DEBUG_FLAG = True
 DELIMITER = ';'
-DATETIME_START_INDEX = 7 # Datetime starts frpm the 7th Character in the File Name
+DATETIME_START_INDEX = 7 # Datetime starts from the 7th Character in the File Name
 
 # Dynamically Populated - Can also be Statically Assigned herein these Array
 btuNameList = []          # BTU Name List         J_B_82_10_27
@@ -203,16 +203,7 @@ print("\nStep 4: Save a Data into an Excel File (Named by Month)...")
 export_data.write_Analysis_Report(blockDataFrames, btuBlockList, btuNameList, pathOutputFolder, targetMonth, targetYear, analyze_data)
 
 # Export DataFrames to Excel
-export_data.write_DataFrames_to_Excel(blockDataFrames, pathOutputFolder, targetMonth, targetYear)
-
-
-
-# Post-Task
-# Compiled into Execute / Use Raw Py Script (Requires Python Runtime on Host)
-# Run based on Windows Task Scheduler
-
-
-# Step 6: Export Diagnostics Logs
+export_data.write_DataFrames_to_Excel(blockDataFrames, btuBlockList, pathOutputFolder, targetMonth, targetYear)
 
 # Record the Python Script Runtime
 end_time = time.time()

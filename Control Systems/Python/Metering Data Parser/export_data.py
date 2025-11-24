@@ -115,12 +115,13 @@ def write_Block_Statistics(file, block_number: str, block_rt_stats: dict, block_
     file.write(f"  Data Completeness:      {block_rth_stats['Block_Data_Completeness_Percentage']:>15,.2f}%\n")
 
 
-def write_DataFrames_to_Excel(blockDataFrames: dict, outputPath: str, targetMonth: str, targetYear: str):
+def write_DataFrames_to_Excel(blockDataFrames: dict, blockList: list, outputPath: str, targetMonth: str, targetYear: str):
     """
     Export block DataFrames to Excel file with each block as a separate sheet.
     
     Args:
         blockDataFrames: Dictionary of block DataFrames
+        blockList: List of block numbers
         outputPath: Path to output folder
         targetMonth: Target month
         targetYear: Target year
@@ -136,10 +137,6 @@ def write_DataFrames_to_Excel(blockDataFrames: dict, outputPath: str, targetMont
     # Create Excel writer
     with pd.ExcelWriter(full_output_path, engine='openpyxl') as writer:
         
-        # Create a placeholder first sheet (will be empty for now)
-        placeholder_df = pd.DataFrame()
-        placeholder_df.to_excel(writer, sheet_name='Summary', index=False)
-        
         # Write each block DataFrame to a separate sheet
         for block, df in blockDataFrames.items():
             sheet_name = f'Block {block}'
@@ -149,23 +146,23 @@ def write_DataFrames_to_Excel(blockDataFrames: dict, outputPath: str, targetMont
         
             # General Parameters to Customize Worksheet Design
             worksheet = writer.sheets[sheet_name]
-            alignment = Alignment(horizontal="center", vertical="center") # Universal Text Alignment
-            fill = PatternFill(start_color="DAEEF3", end_color="DAEEF3", fill_type="solid")  # Light Blue
+            alignment = Alignment(horizontal="center", vertical="center")
+            fill = PatternFill(start_color="DAEEF3", end_color="DAEEF3", fill_type="solid")
             worksheetColumnWidth = 22.5
 
             # Specific Parameters for Header
-            header_fill = PatternFill(start_color="00153E", end_color="00153E", fill_type="solid")  # Navy blue
-            header_font = Font(bold=True, color="FFFFFF")                                           # White, bold
+            header_fill = PatternFill(start_color="00153E", end_color="00153E", fill_type="solid")
+            header_font = Font(bold=True, color="FFFFFF")
 
             # Specific Parameters for Computed Data
-            computed_fill = PatternFill(start_color="B8CCE4", end_color="B8CCE4", fill_type="solid")  # Light Green
+            computed_fill = PatternFill(start_color="B8CCE4", end_color="B8CCE4", fill_type="solid")
 
             # Set the column widths
             for i in range(1, worksheet.max_column + 1):
                 worksheet.column_dimensions[openpyxl.utils.get_column_letter(i)].width = worksheetColumnWidth
             
             # Customize Sheet Header
-            for cell in worksheet[2]:  # Row 2 is the header
+            for cell in worksheet[2]:
                 cell.fill = header_fill
                 cell.font = header_font
                 cell.alignment = alignment
@@ -173,10 +170,10 @@ def write_DataFrames_to_Excel(blockDataFrames: dict, outputPath: str, targetMont
             # Format ALL data cells (excluding header row 2)
             for row in worksheet.iter_rows(min_row=3, max_row=worksheet.max_row):
                 for cell in row:
-                    cell.fill = fill  # Light blue
+                    cell.fill = fill
                     cell.alignment = alignment
 
-            # Then apply computed column formatting on top (overwrites with bold)
+            # Apply computed column formatting
             computed_columns = ['D', 'E', 'F', 'G', 'H']
             for col_letter in computed_columns:
                 for cell in worksheet[col_letter]:
@@ -184,9 +181,98 @@ def write_DataFrames_to_Excel(blockDataFrames: dict, outputPath: str, targetMont
                         cell.fill = computed_fill
                         cell.alignment = alignment
                 
+        # Create Summary Sheet
+        summary_sheet = writer.book.create_sheet('Summary', 0)
 
+        # Define alternating colors for block sections
+        color1_header = PatternFill(start_color="00153E", end_color="00153E", fill_type="solid")  # Dark navy header
+        color2_header = PatternFill(start_color="003B76", end_color="003B76", fill_type="solid")  # Lighter blue header
+        color1_data = PatternFill(start_color="CCDAEC", end_color="CCDAEC", fill_type="solid")    # Dark tone data
+        color2_data = PatternFill(start_color="DAEEF3", end_color="DAEEF3", fill_type="solid")    # Light tone data
 
-    
+        # Row 2: Merged block headers (alternating colors)
+        start_col = 4
+        for idx, block in enumerate(blockList):
+            block_fill = color2_header if idx % 2 == 0 else color1_header 
+            
+            summary_sheet.merge_cells(start_row=2, start_column=start_col, end_row=2, end_column=start_col + 2)
+            cell = summary_sheet.cell(row=2, column=start_col)
+            cell.value = f"Block {block}"
+            cell.fill = block_fill
+            cell.font = header_font
+            cell.alignment = alignment
+            start_col += 3
+
+        # Row 3: Column headers (alternating colors to match blocks above)
+        summary_sheet.cell(row=3, column=1, value="Timestamp").fill = color1_header
+        summary_sheet.cell(row=3, column=1).font = header_font
+        summary_sheet.cell(row=3, column=1).alignment = alignment
+
+        summary_sheet.cell(row=3, column=2, value="Date").fill = color1_header
+        summary_sheet.cell(row=3, column=2).font = header_font
+        summary_sheet.cell(row=3, column=2).alignment = alignment
+
+        summary_sheet.cell(row=3, column=3, value="Time").fill = color1_header
+        summary_sheet.cell(row=3, column=3).font = header_font
+        summary_sheet.cell(row=3, column=3).alignment = alignment
+
+        col_index = 4
+        for idx, block in enumerate(blockList):
+            block_fill = color2_header if idx % 2 == 0 else color1_header 
+            
+            summary_sheet.cell(row=3, column=col_index, value="Total RT Sum").fill = block_fill
+            summary_sheet.cell(row=3, column=col_index).font = header_font
+            summary_sheet.cell(row=3, column=col_index).alignment = alignment
+            
+            summary_sheet.cell(row=3, column=col_index + 1, value="CWSA RT Sum").fill = block_fill
+            summary_sheet.cell(row=3, column=col_index + 1).font = header_font
+            summary_sheet.cell(row=3, column=col_index + 1).alignment = alignment
+            
+            summary_sheet.cell(row=3, column=col_index + 2, value="Retail RT Sum").fill = block_fill
+            summary_sheet.cell(row=3, column=col_index + 2).font = header_font
+            summary_sheet.cell(row=3, column=col_index + 2).alignment = alignment
+            
+            col_index += 3
+
+        # Row 4+: Copy data with alternating colors per block section
+        first_block = blockList[0]
+        first_df = blockDataFrames[first_block]
+
+        for row_idx, row in enumerate(first_df.itertuples(index=False), start=4):
+            # Timestamp, Date, Time (use dark tone)
+            summary_sheet.cell(row=row_idx, column=1, value=row[0]).fill = color1_data
+            summary_sheet.cell(row=row_idx, column=1).alignment = alignment
+            
+            summary_sheet.cell(row=row_idx, column=2, value=row[1]).fill = color1_data
+            summary_sheet.cell(row=row_idx, column=2).alignment = alignment
+            
+            summary_sheet.cell(row=row_idx, column=3, value=row[2]).fill = color1_data
+            summary_sheet.cell(row=row_idx, column=3).alignment = alignment
+            
+            # Data columns (alternating colors per block)
+            col_index = 4
+            for idx, block in enumerate(blockList):
+                block_df = blockDataFrames[block]
+                block_row = block_df.iloc[row_idx - 4]
+                
+                # Alternate data colors per block
+                data_fill = color2_data if idx % 2 == 0 else color1_data
+                
+                summary_sheet.cell(row=row_idx, column=col_index, value=block_row.iloc[3]).fill = data_fill
+                summary_sheet.cell(row=row_idx, column=col_index).alignment = alignment
+                
+                summary_sheet.cell(row=row_idx, column=col_index + 1, value=block_row.iloc[4]).fill = data_fill
+                summary_sheet.cell(row=row_idx, column=col_index + 1).alignment = alignment
+                
+                summary_sheet.cell(row=row_idx, column=col_index + 2, value=block_row.iloc[5]).fill = data_fill
+                summary_sheet.cell(row=row_idx, column=col_index + 2).alignment = alignment
+                
+                col_index += 3
+
+        # Set column widths for summary sheet
+        for i in range(1, col_index):
+            summary_sheet.column_dimensions[openpyxl.utils.get_column_letter(i)].width = 18.5
+        
     print(f"\nDataFrames exported to Excel: {full_output_path}")
     return full_output_path
 
