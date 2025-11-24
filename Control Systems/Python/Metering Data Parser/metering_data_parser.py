@@ -8,6 +8,9 @@
 # Date: 11/6/2025
 # Version: 1.01
 # Changelog: 
+# - 24/11/2025 - Introduce a Metering Filter to seperate the summation of different Meter Readings
+#              - Step 2.5 - Calcuate the per minute sum of the RT for each Meter Category
+#              - Format the Excel for Easy Readability
 
 
 # Input Dependencies: Execution Month & Year (Variable) - Default (System Clock subtracted to Previous Months)
@@ -27,6 +30,7 @@ targetMonth = '10'
 targetYear = '2025'
 pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data' # Absolute Path to Working Directory
 pathOutputFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\Metering Summary Report'
+pathMeterFilterFile = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\filter\FilterList_CWSA.xlsx' # List of Meters to Filter
 
 MONTHS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 DEBUG_FLAG = True
@@ -43,6 +47,7 @@ targetTimestamp = targetYear + targetMonth
 btuNamePrefix = ["J_B_"]
 dataFilePrefix = ["X01_01_"]
 dataFilePostfix = ["BTUREADINGS11MIN.txt", "ACCBTUReadingS11MIN.txt"]
+meterCategory = ["Total RT Sum", "CWSA RT", "Retail RT"]
 
 # For Step 2: Converting Raw Data into Data Frame
 diagnoseStatsRegisters = []
@@ -118,6 +123,49 @@ if DEBUG_FLAG:
 print("\nStep 2: Completed...\n")
 
 
+# Step 2.5: Calculate the Sum for Each Meter based on the Type of Meter ------------------------------------------------------------------------- Step 2.5
+
+# Insert new column after time based on the length of the list 'meterCategory' and name it after each item
+
+print("\nStep 2.5: Add Aggregated Columns by Meter Category...")
+
+# List all the CWSA Meter Names
+meterClassification = pd.read_excel(pathMeterFilterFile)
+meterList_CWSA_Filter = meterClassification['Device Name'].dropna().tolist() 
+
+for block in btuBlockList:
+    
+    # List and Store all the Meters in the Current Process Block 
+    metersInBlock = [] # Initialize with every new Block Processed
+    for meter in btuNameList:   
+        if meter.split('_')[2] == block: 
+            metersInBlock.append(meter)
+
+    # Sum all the RT of Values for the Current Process Block
+    dataColumns_Total_RT = [] # Intialize a List to Store all the RT Names
+    for meter in metersInBlock:
+        dataColumns_Total_RT.append(f'{meter}_RT')
+
+    # Segregate & Classify 
+    dataColumns_CWSA_RT = []
+    dataColumns_Retail_RT = []
+    for meter in metersInBlock: 
+        if meter in meterList_CWSA_Filter:
+            dataColumns_CWSA_RT.append(f'{meter}_RT')
+        else:
+            dataColumns_Retail_RT.append(f'{meter}_RT')
+
+    # Calculate Sum of RT for each Category
+    sum_Total_RT = blockDataFrames[block][dataColumns_Total_RT].sum(axis=1)
+    sum_CWSA_RT = blockDataFrames[block][dataColumns_CWSA_RT].sum(axis=1) if dataColumns_CWSA_RT else 0.0
+    sum_Retail_RT = blockDataFrames[block][dataColumns_Retail_RT].sum(axis=1) if dataColumns_Retail_RT else 0.0
+
+    # Insert Columnbs after the Time column (Index 3)
+    blockDataFrames[block].insert(3, f'{block} Total RT Sum', sum_Total_RT)
+    blockDataFrames[block].insert(4, f'{block} CWSA RT Sum', sum_CWSA_RT)
+    blockDataFrames[block].insert(5, f'{block} Retail RT Sum', sum_Retail_RT)
+
+print("Step 2.5: Completed...\n")
 
 # Step 3: Analyze and Process the Data into Required Output ------------------------------------------------------------------------------------- Step 3
 
@@ -153,6 +201,15 @@ export_data.write_Analysis_Report(blockDataFrames, btuBlockList, btuNameList, pa
 # Export DataFrames to Excel
 export_data.write_DataFrames_to_Excel(blockDataFrames, pathOutputFolder, targetMonth, targetYear)
 
+
+
+# Post-Task
+# Compiled into Execute / Use Raw Py Script (Requires Python Runtime on Host)
+# Run based on Windows Task Scheduler
+
+
+# Step 6: Export Diagnostics Logs
+
 # Record the Python Script Runtime
 end_time = time.time()
 runtime = end_time - start_time
@@ -161,9 +218,4 @@ runtime = end_time - start_time
 export_data.write_Diagnostic_Log(diagnoseStatsRegisters, pathOutputFolder, targetMonth, targetYear, runtime)
 
 print("\nStep 4: Completed...\n")
-
 print(f"\nTotal Runtime: {runtime:.2f} seconds ({runtime/60:.2f} minutes)\n")
-
-# Post-Task
-# Compiled into Execute / Use Raw Py Script (Requires Python Runtime on Host)
-# Run based on Windows Task Scheduler
