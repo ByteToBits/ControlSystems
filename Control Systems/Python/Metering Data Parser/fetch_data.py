@@ -157,6 +157,11 @@ def read_Raw_Text_Data(filePath: str, encoding: str = 'utf-8', healthCheck: bool
                     if not sensorHealth:
                         processValue = 0.0  # Default value if missing - 0.0
                     
+                    # Filter out Negavtive Values
+                    if processValue < 0.0:
+                        processValue = 0.0
+                        sensorHealth = False 
+                    
                     # Capture recovery timestamp (first datapoint after #start)
                     if pendingStartMarker and sensorHealth:
                         timestampRecovery.append(timestampISO.strftime("%Y-%m-%d %H:%M:%S"))

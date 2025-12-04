@@ -26,7 +26,7 @@ import analyze_data
 import export_data
 
 # Initial: Initialize Data
-targetMonth = '04'
+targetMonth = '10'
 targetYear = '2025'
 pathDataFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\PDD_BTUmeter' # Absolute Path to Working Directory
 pathOutputFolder = r'C:\Repository\ControlSystems\Control Systems\Python\Metering Data Parser\data\Metering Summary Report'
