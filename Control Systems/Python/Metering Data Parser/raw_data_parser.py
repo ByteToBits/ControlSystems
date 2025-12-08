@@ -36,12 +36,12 @@ dataFilePostfix = [
 
 # Output file names
 outputFileNames = [
-    "RT_Data", 
-    "RTH_Data", 
-    "Flow_Data", 
-    "CHWST_Data", 
-    "CHWRT_Data", 
-    "DeltaTemp_Data"
+    "BTUREADINGS11MIN", 
+    "ACCBTUReadingS11MIN", 
+    "FLOWS11MIN", 
+    "TEMPS1SUPPLY1MIN", 
+    "TEMPS1RETURN1MIN", 
+    "TEMPDeltaS11MIN"
 ]
 
 # Track runtime
@@ -195,7 +195,7 @@ def process_all_meters(meter_list: list, file_lists: list, file_types: list, out
             input_path = os.path.join(data_folder, meter_name, file_name)
             output_dir = os.path.join(output_folder, f"Year={year}", f"Month={month}", 
                                      f"Date={day}", meter_name)
-            output_filename = f"{year}_{month}_{day}_{output_name}.txt"
+            output_filename = f"X01_01_{year}{month}{day}_70_01_{output_name}.txt"
             output_path = os.path.join(output_dir, output_filename)
             
             # Check if input exists
@@ -293,6 +293,4 @@ runtime = end_time - start_time
 
 print(f"Files processed: {processed}")
 print(f"Files success:   {success}")
-print(f"Files failed:    {processed - success}")
-print(f"Lines written:   {lines:,}")
 print(f"Runtime:         {runtime:.2f}s")
